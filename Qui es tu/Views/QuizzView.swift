@@ -44,7 +44,9 @@ struct QuizzView: View {
                     VStack {
                         ForEach(quizzStore.getQuestion().answers.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
                             Button {
-                                quizzStore.selectAnswer(answerNumber: key)
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+                                    quizzStore.selectAnswer(answerNumber: key)
+                                }
                             } label: {
                                 HStack {
                                     Text(value)
@@ -57,10 +59,12 @@ struct QuizzView: View {
                                 .padding(.vertical, 20)
                                 .background(quizzStore.isAnswerSelected(key) ? Color.mint : .white)
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
+                                .scaleEffect(quizzStore.isAnswerSelected(key) ? 1.03 : 1.0)
                             }
                         }
                     }
                     .padding(.vertical, 20)
+                    .padding(.horizontal, 5)
                     Button {
                         quizzStore.validateAnswer()
                     } label: {
@@ -73,11 +77,10 @@ struct QuizzView: View {
                             .clipShape(.rect(cornerRadius: 5))
                             .overlay {
                                 RoundedRectangle(cornerRadius: 5)
-                                    .stroke(lineWidth: 1)
+                                    .stroke(lineWidth: 3)
                                     .foregroundStyle(.white)
                             }
                     }
-                    
                 }
             } else {
                 VStack {
@@ -98,7 +101,7 @@ struct QuizzView: View {
                                         LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     )
                             }
-                            Text(quizzStore.bestMatchResult?.1 ?? "Description...")
+                        Text(quizzStore.bestMatchResult?.1 ?? "Description...")
                             .font(.headline)
                             .foregroundStyle(.black)
                             .padding(.vertical)
@@ -128,9 +131,9 @@ struct QuizzView: View {
         )
         .onAppear {
             // To remove. Set up just for the preview
-            quizzStore.getQuizzList()
+            //quizzStore.getQuizzList()
             //
-            quizzStore.setQuizz(id: "1")
+            quizzStore.setQuizz(id: quizzId)
         }
         .onDisappear {
             quizzStore.resetQuizz()
@@ -139,6 +142,6 @@ struct QuizzView: View {
 }
 
 #Preview {
-    QuizzView(quizzId: "Animals")
+    QuizzView(quizzId: "1")
         .environmentObject(QuizzStore())
 }

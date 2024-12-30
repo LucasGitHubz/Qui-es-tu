@@ -30,7 +30,6 @@ class FirestoreService {
             }
             
             do {
-                // Use compactMap to decode each document into a Quizz object
                 let quizzes = try snapshot?.documents.compactMap { document in
                     try document.data(as: Quizz.self)
                 }

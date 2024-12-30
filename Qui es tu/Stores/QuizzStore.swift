@@ -15,6 +15,10 @@ class QuizzStore: ObservableObject {
     @Published var isQuizzFinished = false
     @Published var bestMatchResult: (String, String)? = nil
 
+    @Published var showLoading = false
+    @Published var errorMessage = ""
+    @Published var showAlert = false
+
     private let firestoreService: FirestoreService
     
     init(firestoreService: FirestoreService = FirestoreService()) {
@@ -25,13 +29,14 @@ class QuizzStore: ObservableObject {
         firestoreService.fetchAllQuizzes { quizzes, error in
             if let error {
                 print("handle the error")
+                self.errorMessage = error.localizedDescription
+                self.showAlert = true
                 return
             }
 
             self.quizzList = quizzes ?? []
         }
-        // fetch from firebase the quizz
-        //quizzList = Quizz.fakeQuizz
+        // quizzList = Quizz.fakeQuizz
     }
 
     func setQuizz(id: String) {
@@ -66,9 +71,7 @@ class QuizzStore: ObservableObject {
             // In that case, end the quizz with the result.
             if (questionIndex + 1) == 10 {
                 calculateBestMatch()
-                withAnimation(.snappy) {
-                    isQuizzFinished = true
-                }
+                isQuizzFinished = true
             } else {
                 // Otherwise continue the quizz
                 questionIndex += 1

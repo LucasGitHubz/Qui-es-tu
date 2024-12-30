@@ -68,6 +68,9 @@ struct ContentView: View {
             .onAppear {
                 quizzStore.getQuizzList()
             }
+            .alert(isPresented: $quizzStore.showAlert) {
+                Alert(title: Text("Oups !"), message: Text(quizzStore.errorMessage), dismissButton: .default(Text("Ok")))
+            }
         }
         .preferredColorScheme(.light)
         .tint(.white)
