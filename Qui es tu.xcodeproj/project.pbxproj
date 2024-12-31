@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A00021472D158D5200AC2F67 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00021462D158D5200AC2F67 /* Assets.xcassets */; };
 		A016F29D2D1DC3050015A8D7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A016F29C2D1DC3050015A8D7 /* FirebaseAnalytics */; };
 		A016F29F2D1DC3050015A8D7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A016F29E2D1DC3050015A8D7 /* FirebaseAuth */; };
 		A016F2A12D1DC3050015A8D7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2A02D1DC3050015A8D7 /* FirebaseCore */; };
@@ -16,7 +15,6 @@
 		A016F2A72D1DC3050015A8D7 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2A62D1DC3050015A8D7 /* FirebaseMessaging */; };
 		A016F2A92D1DC3050015A8D7 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2A82D1DC3050015A8D7 /* FirebaseRemoteConfig */; };
 		A016F2AB2D1DC3050015A8D7 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2AA2D1DC3050015A8D7 /* FirebaseStorage */; };
-		A099DAB62D1DC1BB006A10CF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A099DAB52D1DC1BB006A10CF /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,10 +36,8 @@
 
 /* Begin PBXFileReference section */
 		A000213F2D158D5100AC2F67 /* Qui es tu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Qui es tu.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A00021462D158D5200AC2F67 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A000214F2D158D5200AC2F67 /* Qui es tuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Qui es tuTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00021592D158D5200AC2F67 /* Qui es tuUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Qui es tuUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A099DAB52D1DC1BB006A10CF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -99,8 +95,6 @@
 			isa = PBXGroup;
 			children = (
 				A00021412D158D5100AC2F67 /* Qui es tu */,
-				A00021462D158D5200AC2F67 /* Assets.xcassets */,
-				A099DAB52D1DC1BB006A10CF /* GoogleService-Info.plist */,
 				A00021522D158D5200AC2F67 /* Qui es tuTests */,
 				A000215C2D158D5200AC2F67 /* Qui es tuUITests */,
 				A00021402D158D5100AC2F67 /* Products */,
@@ -248,8 +242,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A00021472D158D5200AC2F67 /* Assets.xcassets in Resources */,
-				A099DAB62D1DC1BB006A10CF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,9 +429,10 @@
 				DEVELOPMENT_TEAM = 8LW7CGBRD9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Qui-es-tu-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -467,9 +460,10 @@
 				DEVELOPMENT_TEAM = 8LW7CGBRD9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Qui-es-tu-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;

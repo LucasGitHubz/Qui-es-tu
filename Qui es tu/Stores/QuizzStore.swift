@@ -15,7 +15,8 @@ class QuizzStore: ObservableObject {
     @Published var isQuizzFinished = false
     @Published var bestMatchResult: (String, String)? = nil
 
-    @Published var showLoading = false
+    @Published var isFetchingQuizzes = false
+
     @Published var errorMessage = ""
     @Published var showAlert = false
 
@@ -23,10 +24,14 @@ class QuizzStore: ObservableObject {
     
     init(firestoreService: FirestoreService = FirestoreService()) {
         self.firestoreService = firestoreService
+
+        getQuizzList()
     }
 
     func getQuizzList() {
+        isFetchingQuizzes = true
         firestoreService.fetchAllQuizzes { quizzes, error in
+            self.isFetchingQuizzes = false
             if let error {
                 print("handle the error")
                 self.errorMessage = error.localizedDescription
