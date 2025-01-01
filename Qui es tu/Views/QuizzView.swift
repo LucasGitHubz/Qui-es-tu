@@ -10,13 +10,13 @@ import SwiftUI
 struct QuizzView: View {
     @EnvironmentObject var quizzStore: QuizzStore
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var progress: Double = 1
+
+    @State private var startAnimation = false
     let quizzId: String
     
     var body: some View {
         ZStack {
-            if !quizzStore.isQuizzFinished {
+            if quizzStore.isQuizzFinished {
                 VStack {
                     ProgressView(value: Double(quizzStore.questionIndex) + 1, total: 10.0)
                         .progressViewStyle(LinearProgressViewStyle())
@@ -52,6 +52,9 @@ struct QuizzView: View {
                                     Text(value)
                                         .font(.subheadline.bold())
                                         .foregroundStyle(quizzStore.isAnswerSelected(key) ? .white : .black)
+                                        .transaction { transaction in
+                                            transaction.animation = nil
+                                        }
                                     Spacer()
                                 }
                                 .multilineTextAlignment(.leading)
@@ -82,49 +85,54 @@ struct QuizzView: View {
                             }
                     }
                 }
+                .padding()
             } else {
-                VStack {
+                if !quizzStore.isLoadingResult {
+                    ParticuleAnimationView()
+                } else {
                     VStack {
-                        Text(quizzStore.bestMatchResult?.0 ?? "Lynx")
-                            .font(.title.bold())
-                            .foregroundStyle(.black)
-                            .padding(.bottom)
-                        Image(quizzStore.bestMatchResult?.0 ?? "Lynx")
-                            .resizable()
-                            .frame(height: 200)
-                            .frame(maxWidth: .infinity)
-                            .shadow(color: .black.opacity(0.1), radius: 5)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .stroke(lineWidth: 4)
-                                    .foregroundStyle(
-                                        LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                    )
-                            }
-                        Text(quizzStore.bestMatchResult?.1 ?? "Description...")
-                            .font(.headline)
-                            .foregroundStyle(.black)
-                            .padding(.vertical)
+                        VStack {
+                            Text(quizzStore.bestMatchResult?.0 ?? "Lynx")
+                                .font(.title.bold())
+                                .foregroundStyle(.black)
+                                .padding(.bottom)
+                            Image(quizzStore.bestMatchResult?.0 ?? "Lynx")
+                                .resizable()
+                                .frame(height: 200)
+                                .frame(maxWidth: .infinity)
+                                .shadow(color: .black.opacity(0.1), radius: 5)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(lineWidth: 4)
+                                        .foregroundStyle(
+                                            LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                        )
+                                }
+                            Text(quizzStore.bestMatchResult?.1 ?? "Description...")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                                .padding(.vertical)
+                        }
+                        .padding()
+                        .background(.white.opacity(0.8))
+                        .clipShape(.rect(cornerRadius: 10))
+                        Spacer()
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Terminer")
+                                .font(.title3.bold())
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 60)
+                                .background(Color("Turquoise").opacity(0.6))
+                                .clipShape(.rect(cornerRadius: 5))
+                        }
                     }
                     .padding()
-                    .background(.white.opacity(0.8))
-                    .clipShape(.rect(cornerRadius: 10))
-                    Spacer()
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Terminer")
-                            .font(.title3.bold())
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 60)
-                            .background(Color("Turquoise").opacity(0.6))
-                            .clipShape(.rect(cornerRadius: 5))
-                    }
                 }
             }
         }
-        .padding()
         .background(
             LinearGradient(colors: [Color("Turquoise").opacity(0.5), Color("Red").opacity(0.5)], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea()

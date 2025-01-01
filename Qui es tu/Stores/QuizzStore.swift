@@ -15,6 +15,7 @@ class QuizzStore: ObservableObject {
     @Published var isQuizzFinished = false
     @Published var bestMatchResult: (String, String)? = nil
 
+    @Published var isLoadingResult = false
     @Published var isFetchingQuizzes = false
 
     @Published var errorMessage = ""
@@ -41,7 +42,7 @@ class QuizzStore: ObservableObject {
 
             self.quizzList = quizzes ?? []
         }
-        // quizzList = Quizz.fakeQuizz
+         //quizzList = Quizz.fakeQuizz
     }
 
     func setQuizz(id: String) {
@@ -76,10 +77,22 @@ class QuizzStore: ObservableObject {
             // In that case, end the quizz with the result.
             if (questionIndex + 1) == 10 {
                 calculateBestMatch()
-                isQuizzFinished = true
+                showResult()
             } else {
                 // Otherwise continue the quizz
                 questionIndex += 1
+            }
+        }
+    }
+
+    private func showResult() {
+        withAnimation {
+            isLoadingResult = true
+            isQuizzFinished = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            withAnimation {
+                self.isLoadingResult = false
             }
         }
     }
