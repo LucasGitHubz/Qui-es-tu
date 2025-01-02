@@ -2,7 +2,7 @@
 Qui es tu/Supporting Files/GoogleService-Info.plist
 
 # macOS metadata files
-.DS_Store
+*.DS_Store
 
 # Xcode
 ## User settings
