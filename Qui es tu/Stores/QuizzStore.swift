@@ -71,6 +71,7 @@ class QuizzStore: ObservableObject {
         return userAnswers[questionIndex] == answerNumber
     }
 
+
     func validateAnswer() {
         if userAnswers.count > questionIndex {
             // If questionIndex + 1 == 10, that means the last question has been reached.
@@ -97,7 +98,7 @@ class QuizzStore: ObservableObject {
         }
     }
 
-    private func calculateBestMatch() {
+    func calculateBestMatch() {
         // Ensure there are answers to compare
         guard let matchingResults = quizz.matchingResults,
               let resultDescriptions = quizz.resultDescriptions else {

@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct Quizz: Codable, Identifiable {
+struct Quizz: Codable, Identifiable, Equatable {
+    static func == (lhs: Quizz, rhs: Quizz) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     struct Question: Codable {
         let number: Int
         let question: String

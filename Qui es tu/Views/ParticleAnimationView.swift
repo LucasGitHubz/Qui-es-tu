@@ -7,31 +7,31 @@
 
 import SwiftUI
 
-struct ParticuleAnimationView: View {
-    @StateObject private var particuleAnimationStore = ParticuleAnimationStore()
+struct ParticleAnimationView: View {
+    @StateObject private var particleAnimationStore = ParticleAnimationStore()
     
     var body: some View {
         ZStack {
             VStack(spacing: 10) {
                 Spacer()
                 ZStack {
-                    ForEach(particuleAnimationStore.particules) { particule in
+                    ForEach(particleAnimationStore.particles) { particle in
                         Circle()
                             .foregroundStyle(.white)
                             .frame(width: 5, height: 5)
-                            .offset(x: particule.radius * cos(particule.angle) * (particuleAnimationStore.activatePulsation ? 0.7 : 0.3),
-                                    y: particule.radius * sin(particule.angle) * (particuleAnimationStore.activatePulsation ? 0.7 : 0.3)) // Position on the circle
+                            .offset(x: particle.radius * cos(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3),
+                                    y: particle.radius * sin(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3)) // Position on the circle
                             .shadow(color: .white.opacity(0.7), radius: 3)
-                            .scaleEffect(particuleAnimationStore.activatePulsation ? 1.05 : 1)
+                            .scaleEffect(particleAnimationStore.activatePulsation ? 1.05 : 1)
                     }
                 }
                 .padding(.vertical, 80)
                 HStack(spacing: 1) {
-                    Text("Analyse en cours\(particuleAnimationStore.dots)")
+                    Text("Analyse en cours\(particleAnimationStore.dots)")
                         .font(.title3.bold())
                         .foregroundStyle(.white)
                         .onAppear {
-                            particuleAnimationStore.startDotsAnimation()
+                            particleAnimationStore.startDotsAnimation()
                         }
                 }
                 Spacer()
@@ -39,7 +39,7 @@ struct ParticuleAnimationView: View {
             }
         }
         .onAppear {
-            particuleAnimationStore.startMotion()
+            particleAnimationStore.startMotion()
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -51,6 +51,6 @@ struct ParticuleAnimationView: View {
 }
 
 #Preview {
-    ParticuleAnimationView()
-        .environmentObject(ParticuleAnimationStore())
+    ParticleAnimationView()
+        .environmentObject(ParticleAnimationStore())
 }

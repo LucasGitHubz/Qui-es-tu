@@ -11,12 +11,11 @@ struct QuizzView: View {
     @EnvironmentObject var quizzStore: QuizzStore
     @Environment(\.dismiss) private var dismiss
 
-    @State private var startAnimation = false
     let quizzId: String
     
     var body: some View {
         ZStack {
-            if quizzStore.isQuizzFinished {
+            if !quizzStore.isQuizzFinished {
                 VStack {
                     ProgressView(value: Double(quizzStore.questionIndex) + 1, total: 10.0)
                         .progressViewStyle(LinearProgressViewStyle())
@@ -87,8 +86,8 @@ struct QuizzView: View {
                 }
                 .padding()
             } else {
-                if !quizzStore.isLoadingResult {
-                    ParticuleAnimationView()
+                if quizzStore.isLoadingResult {
+                    ParticleAnimationView()
                 } else {
                     VStack {
                         VStack {
