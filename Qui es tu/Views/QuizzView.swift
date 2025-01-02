@@ -63,6 +63,7 @@ struct QuizzView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                 .scaleEffect(quizzStore.isAnswerSelected(key) ? 1.03 : 1.0)
                             }
+                            .sensoryFeedback(.impact(flexibility: .soft, intensity: 1), trigger: quizzStore.userAnswers)
                         }
                     }
                     .padding(.vertical, 20)
