@@ -28,10 +28,10 @@ struct Quizz: Codable, Identifiable, Equatable {
     static let fakeQuizz = [
         Quizz(id: "1", title: "Animals", image: "Chat", questions: [
             Question(number: 0, question: "Quelle serait ta réaction si un gland te tombait sur la tête ?", answers: [
-                1: "Tu cherches qui te l'a jeté",
-                2: "Tu le manges",
-                3: "Tu le plantes",
-                4: "Tu le gardes précieusement"
+                1: "Tu cherches qui te l'a jeté iefgde ziuezy freizu",
+                2: "Tu le manges agd iegdfe fiugez çfugzeu",
+                3: "Tu le plantes digf disfgho yfoez hfuoz",
+                4: "Tu le gardes précieusement qeiuyfhoue yfouesy hfoues"
             ]),
             Question(number: 1, question: "Que préfères-tu ?", answers: [
                 1: "Donner la patte",

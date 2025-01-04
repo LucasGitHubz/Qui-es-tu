@@ -25,12 +25,14 @@ class QuizzStore: ObservableObject {
     
     init(firestoreService: FirestoreService = FirestoreService()) {
         self.firestoreService = firestoreService
-
+        /*firestoreService.saveQuizz { error in
+            print("")
+        }*/
         getQuizzList()
     }
 
     func getQuizzList() {
-        isFetchingQuizzes = true
+        /*isFetchingQuizzes = true
         firestoreService.fetchAllQuizzes { quizzes, error in
             self.isFetchingQuizzes = false
             if let error {
@@ -41,8 +43,8 @@ class QuizzStore: ObservableObject {
             }
 
             self.quizzList = quizzes ?? []
-        }
-         //quizzList = Quizz.fakeQuizz
+        }*/
+         quizzList = Quizz.fakeQuizz
     }
 
     func setQuizz(id: String) {

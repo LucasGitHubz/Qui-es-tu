@@ -139,7 +139,7 @@ struct QuizzView: View {
         )
         .onAppear {
             // To remove. Set up just for the preview
-            //quizzStore.getQuizzList()
+            quizzStore.getQuizzList()
             //
             quizzStore.setQuizz(id: quizzId)
         }
