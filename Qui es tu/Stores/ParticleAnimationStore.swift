@@ -30,7 +30,7 @@ class ParticleAnimationStore: ObservableObject {
     }
     
     func startMotion() {
-        circleTimer?.invalidate() // Ensure no duplicate timers
+        circleTimer?.invalidate()
         circleTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { _ in
             self.updateParticlePositions()
         }
@@ -38,10 +38,9 @@ class ParticleAnimationStore: ObservableObject {
         withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
             activatePulsation.toggle()
         }
-        print("test: \(circleRadius)")
     }
 
-    func updateParticlePositions() {
+    private func updateParticlePositions() {
         DispatchQueue.main.async {
             for i in self.particles.indices {
                 // Increment the angle based on speed

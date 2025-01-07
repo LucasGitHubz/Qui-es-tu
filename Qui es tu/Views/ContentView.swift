@@ -26,8 +26,8 @@ struct ContentView: View {
                     HStack {
                         Text("Choisis ton thème")
                             .font(.largeTitle.bold())
-                            .foregroundStyle(.black.opacity(0.8))
-                            .padding(.horizontal, 20)
+                            .foregroundStyle(.black)
+                            .padding(.horizontal)
                             .padding(.top, 20)
                         Spacer()
                     }
@@ -35,7 +35,10 @@ struct ContentView: View {
                         LazyVGrid(columns: columns, spacing: 15) {
                             ForEach(quizzStore.quizzList, id: \.id) { quizz in
                                 NavigationLink {
-                                    QuizzView(quizzId: quizz.id)
+                                    QuizzView()
+                                        .onAppear {
+                                            quizzStore.setQuizz(id: quizz.id)
+                                        }
                                 } label: {
                                     VStack(spacing: 0) {
                                         Image(quizz.image)

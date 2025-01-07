@@ -11,32 +11,30 @@ struct ParticleAnimationView: View {
     @StateObject private var particleAnimationStore = ParticleAnimationStore()
     
     var body: some View {
-        ZStack {
-            VStack(spacing: 10) {
-                Spacer()
-                ZStack {
-                    ForEach(particleAnimationStore.particles) { particle in
-                        Circle()
-                            .foregroundStyle(.white)
-                            .frame(width: 5, height: 5)
-                            .offset(x: particle.radius * cos(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3),
-                                    y: particle.radius * sin(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3)) // Position on the circle
-                            .shadow(color: .white.opacity(0.7), radius: 3)
-                            .scaleEffect(particleAnimationStore.activatePulsation ? 1.05 : 1)
-                    }
-                }
-                .padding(.vertical, 80)
-                HStack(spacing: 1) {
-                    Text("Analyse en cours\(particleAnimationStore.dots)")
-                        .font(.title3.bold())
+        VStack(spacing: 10) {
+            Spacer()
+            ZStack {
+                ForEach(particleAnimationStore.particles) { particle in
+                    Circle()
                         .foregroundStyle(.white)
-                        .onAppear {
-                            particleAnimationStore.startDotsAnimation()
-                        }
+                        .frame(width: 4, height: 4)
+                        .offset(x: particle.radius * cos(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3),
+                                y: particle.radius * sin(particle.angle) * (particleAnimationStore.activatePulsation ? 0.7 : 0.3)) // Position on the circle
+                        .shadow(color: .white.opacity(0.7), radius: 3)
+                        .scaleEffect(particleAnimationStore.activatePulsation ? 1.05 : 1)
                 }
-                Spacer()
-                Spacer()
             }
+            .padding(.vertical, 80)
+            HStack(spacing: 1) {
+                Text("Analyse en cours\(particleAnimationStore.dots)")
+                    .font(.title3.bold())
+                    .foregroundStyle(.white)
+                    .onAppear {
+                        particleAnimationStore.startDotsAnimation()
+                    }
+            }
+            Spacer()
+            Spacer()
         }
         .onAppear {
             particleAnimationStore.startMotion()
@@ -45,7 +43,7 @@ struct ParticleAnimationView: View {
         .frame(maxWidth: .infinity)
         .background(
             LinearGradient(colors: [Color("Turquoise").opacity(0.5), Color("Red").opacity(0.5)], startPoint: .top, endPoint: .bottom)
-            .ignoresSafeArea()
+                .ignoresSafeArea()
         )
     }
 }

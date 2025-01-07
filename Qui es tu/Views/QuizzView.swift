@@ -10,8 +10,6 @@ import SwiftUI
 struct QuizzView: View {
     @EnvironmentObject var quizzStore: QuizzStore
     @Environment(\.dismiss) private var dismiss
-
-    let quizzId: String
     
     var body: some View {
         ZStack {
@@ -138,12 +136,6 @@ struct QuizzView: View {
             LinearGradient(colors: [Color("Turquoise").opacity(0.5), Color("Red").opacity(0.5)], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea()
         )
-        .onAppear {
-            // To remove. Set up just for the preview
-            //quizzStore.getQuizzList()
-            //
-            quizzStore.setQuizz(id: quizzId)
-        }
         .onDisappear {
             quizzStore.resetQuizz()
         }
@@ -151,6 +143,6 @@ struct QuizzView: View {
 }
 
 #Preview {
-    QuizzView(quizzId: "1")
+    QuizzView()
         .environmentObject(QuizzStore())
 }

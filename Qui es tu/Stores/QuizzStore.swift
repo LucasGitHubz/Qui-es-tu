@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 class QuizzStore: ObservableObject {
     @Published var quizzList: [Quizz] = []
-    @Published var quizz: Quizz = Quizz(id: "", title: "", image: "", questions: nil, resultDescriptions: nil)
+    @Published var quizz: Quizz = Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
     @Published var questionIndex = 0
     @Published var userAnswers = [Int]()
     @Published var isQuizzFinished = false
@@ -26,14 +26,6 @@ class QuizzStore: ObservableObject {
     
     init(firestoreService: FirestoreService = FirestoreService()) {
         self.firestoreService = firestoreService
-        /*Task {
-            do {
-                try await firestoreService.saveQuizz()
-            } catch {
-                errorMessage = ""
-                showAlert = true
-            }
-        }*/
         getQuizzList()
     }
 
@@ -48,11 +40,10 @@ class QuizzStore: ObservableObject {
                 showAlert = true
             }
         }
-         //quizzList = Quizz.fakeQuizz
     }
 
     func setQuizz(id: String) {
-        quizz = quizzList.first(where: { $0.id == id }) ?? Quizz(id: "", title: "", image: "", questions: nil, resultDescriptions: nil)
+        quizz = quizzList.first(where: { $0.id == id }) ?? Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
     }
 
     func getQuestion() -> Quizz.Question {
@@ -131,7 +122,7 @@ class QuizzStore: ObservableObject {
     }
 
     func resetQuizz() {
-        quizz = Quizz(id: "", title: "", image: "", questions: nil, resultDescriptions: nil)
+        quizz = Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
         questionIndex = 0
         userAnswers = [Int]()
         isQuizzFinished = false
