@@ -1,6 +1,6 @@
 ## Qui es tu ? / Demo
 
-(Photo)
+![Preview](https://github.com/LucasGitHubz/Qui-es-tu/blob/main/Preview.jpg)
 
 ## Qu'est ce que c'est ? 
 Qui es tu ? est une application fun avec un concept simple. Choisis un thème, réponds à 10 questions et après une analyse ULTRA poussée faites par une centaines de scientifiques venant de la Silicon Valley, la meilleure correspondance te sera révélée !
