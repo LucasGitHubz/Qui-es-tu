@@ -66,7 +66,7 @@ struct QuizzView: View {
                             .sensoryFeedback(.impact(flexibility: .soft, intensity: 1), trigger: quizzStore.userAnswers)
                         }
                     }
-                    .padding(.vertical, 20)
+                    .padding(.bottom, 10)
                     .padding(.horizontal, 5)
                     Button {
                         quizzStore.validateAnswer()
@@ -108,6 +108,7 @@ struct QuizzView: View {
                                             LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
                                         )
                                 }
+                                .background(.black.opacity(0.1))
                             Text(quizzStore.bestMatchResult?.1 ?? "Description...")
                                 .font(.headline)
                                 .foregroundStyle(.black)
@@ -139,7 +140,7 @@ struct QuizzView: View {
         )
         .onAppear {
             // To remove. Set up just for the preview
-            quizzStore.getQuizzList()
+            //quizzStore.getQuizzList()
             //
             quizzStore.setQuizz(id: quizzId)
         }

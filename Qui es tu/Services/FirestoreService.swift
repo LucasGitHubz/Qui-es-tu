@@ -8,123 +8,114 @@
 import FirebaseFirestore
 
 class FirestoreService {
-    var quizz = Quizz(id: "gods", title: "Dieux", image: "Zeus", questions: [
-        Quizz.Question(number: 0, question: "Quelle-est ta saison préférée ?", answers: [
-            1: "Eté",
-            2: "Hiver",
-            3: "Automne",
-            4: "Printemps"
+    var quizz = Quizz(id: "weapons", title: "Arme en cas d'apocalypse", image: "L'AK-47", questions: [
+        Quizz.Question(number: 0, question: "Quel-est ton plus grand défaut ?", answers: [
+            1: "Maladroit(e)",
+            2: "Inconscient(e)",
+            3: "Têtu(e)",
+            4: "Impatient(e)"
         ]),
-        Quizz.Question(number: 1, question: "Tu préfères :", answers: [
-            1: "Les spaghettis bolognaise",
-            2: "Les pâtes à pouf",
-            3: "Les pâtes aux fruits de mer",
-            4: "Les pâtes carbonara"
+        Quizz.Question(number: 1, question: "Tu es plutôt ?", answers: [
+            1: "Vampire",
+            2: "Zombie",
+            3: "Loup-garou",
+            4: "Sorcière"
         ]),
-        Quizz.Question(number: 2, question: "Où aimes-tu passer du temps ?", answers: [
-            1: "Dans un aquarium",
-            2: "Dans une bibliothèque",
-            3: "Dans une galerie d'art",
-            4: "Dans un musée"
+        Quizz.Question(number: 2, question: "Tu fais une chute à vélo, quelle-est ta réaction ?", answers: [
+            1: "De rage, tu casses ton vélo et finis à pieds",
+            2: "Tu éclates de rire car dans ta chute tu as écrasé une fourmi",
+            3: "Tu vas à l'hôpital, persuadé d'avoir une triple fracture du coude",
+            4: "Tu pleures à chaudes larmes"
         ]),
-        Quizz.Question(number: 3, question: "Quelle serait ta réaction si les habitants de la planète, sauf toi, se changeaient en vache ?", answers: [
-            1: "Tu organiserais une gigantesque steak-partie avec, toi, comme seul(e) participant(e)",
-            2: "Tu es persuadé(e) d'être une vache depuis ta naissance, donc rien ne change à ta vie",
-            3: "Tu serais tout simplement content(e) d'avoir une superbe pelouse",
-            4: "Tu t'entraînerais au rodéo, afin de devenir un(e) véritable cow-boy/cow-girl"
+        Quizz.Question(number: 3, question: "Quel-est ton point fort ?", answers: [
+            1: "Ta force",
+            2: "Ton intelligence",
+            3: "Ta beauté",
+            4: "Ton charisme"
         ]),
-        Quizz.Question(number: 4, question: "Quelle type de série aimes-tu ?", answers: [
-            1: "Les séries policières",
-            2: "Tu n'es pas série",
-            3: "Les séries fantastiques",
-            4: "Les séries romantiques"
+        Quizz.Question(number: 4, question: "Tu écoutes principalement :", answers: [
+            1: "Du rap",
+            2: "Du rock",
+            3: "De la pop/dance",
+            4: "De la musique classique"
         ]),
-        Quizz.Question(number: 5, question: "Quel serait ton voeu ?", answers: [
-            1: "Être plus petit(e)",
-            2: "Être plus gros(se)",
-            3: "Être plus mince",
-            4: "Être plus grand(e)"
+        Quizz.Question(number: 5, question: "Quelle huile préfères-tu ?", answers: [
+            1: "L'huile de noix",
+            2: "L'huile de moteur",
+            3: "L'huile d'olive",
+            4: "L'huile de tournesol"
         ]),
-        Quizz.Question(number: 6, question: "Tu es plutôt :", answers: [
-            1: "Soirée romantique",
-            2: "Soirée à la maison",
-            3: "Soirée entre amis",
-            4: "Suavemente"
+        Quizz.Question(number: 6, question: "Quelle cuisson préfères-tu pour ton steak ?", answers: [
+            1: "Bleue",
+            2: "Saignante",
+            3: "À point",
+            4: "Carbonisée"
         ]),
-        Quizz.Question(number: 7, question: "Quel continent préfères-tu ?", answers: [
-            1: "Afrique",
-            2: "Europe",
-            3: "Asie",
-            4: "Amérique"
+        Quizz.Question(number: 7, question: "Tu préfères :", answers: [
+            1: "Boire de l'eau",
+            2: "Boire du thé",
+            3: "Boire des sirops",
+            4: "Boire des sodas"
         ]),
-        Quizz.Question(number: 8, question: "Tu es plus du genre :", answers: [
-            1: "Méfiant(e)",
-            2: "Sauvage",
-            3: "Peureux(se)",
-            4: "Craintif(ve)"
+        Quizz.Question(number: 8, question: "Quelle-est ta destination favorite ?", answers: [
+            1: "Le Pérou",
+            2: "L'Égypte",
+            3: "La Thaïlande",
+            4: "L'Himalaya"
         ]),
-        Quizz.Question(number: 9, question: "En train de perdre au Monopoly, tu :", answers: [
-            1: "T'en fiches car dans la vraie vie c'est toi le/la plus riche",
-            2: "Agis dans la plus grande discrétion et balance le plateau de jeu contre un mur",
-            3: "Pleures à chaudes larmes en enchaînant une série de pas de danse",
-            4: "Es prêt(e) à commettre un acte cruel pour remporter la victoire"
+        Quizz.Question(number: 9, question: "Quelle serait ta réaction si un policier t'attrape en train de voler une orange au marché ?", answers: [
+            1: "Tu te fais pipi dessus",
+            2: "Tu la manges devant lui puis, tu rotes",
+            3: "Tu bouges plus en espérant être invisible",
+            4: "Tu le regardes en louchant, pour lui faire croire que tu as confondu avec Pupuce ton chinchilla"
         ])
     ], matchingResults: [
-        "Zeus": [4, 4, 3, 1, 4, 4, 4, 2, 1, 1],
-        "Héra": [4, 1, 2, 2, 4, 3, 2, 1, 3, 3],
-        "Poséidon": [1, 3, 1, 4, 3, 1, 3, 4, 1, 2],
-        "Apollon": [4, 4, 3, 3, 2, 1, 4, 2, 4, 1],
-        "Athéna": [2, 1, 3, 4, 1, 2, 1, 3, 2, 4],
-        "Artémis": [2, 2, 4, 2, 4, 1, 1, 1, 3, 3],
-        "Aphrodite": [4, 2, 4, 3, 4, 3, 4, 4, 4, 3],
-        "Arès": [3, 1, 2, 1, 3, 2, 2, 3, 2, 4],
-        "Héphaïstos": [1, 2, 1, 1, 2, 1, 2, 2, 1, 2],
-        "Hadès": [2, 1, 4, 1, 1, 1, 2, 2, 1, 4],
-        "Hermès": [1, 3, 1, 4, 4, 3, 3, 4, 3, 2],
-        "Dionysos": [3, 4, 3, 3, 3, 3, 3, 2, 4, 1]
+        "La tronçonneuse": [4, 1, 2, 1, 2, 2, 4, 4, 3, 2],
+        "Le fusil à pompe": [3, 2, 1, 1, 1, 1, 2, 1, 4, 3],
+        "La brosse à dents": [2, 1, 3, 3, 4, 3, 3, 1, 4, 1],
+        "Le déguisement du huissier de justice": [1, 4, 4, 2, 3, 3, 3, 2, 1, 4],
+        "L'AK-47": [1, 3, 1, 1, 1, 2, 2, 4, 1, 1],
+        "La batte de baseball": [2, 2, 2, 4, 2, 1, 1, 3, 2, 2],
+        "Le katana": [3, 3, 3, 4, 4, 4, 1, 2, 3, 3],
+        "L'arc": [3, 4, 4, 3, 4, 4, 1, 2, 2, 3]
     ], resultDescriptions: [
-        "Zeus": "Charismatique et fier, tu rayonnes par ta force et ta prestance. Protecteur des tiens, tu inspires le respect, mais attention: un excès de confiance pourrait te faire trébucher… Même les dieux ne sont pas invincibles !",
-        "Héra": "Fière et jalouse, tu n'es pas très agréable à vivre... Mais on te comprend ! Cette attitude est due à ton entourage. Alors si tu veux un conseil, change tes fréquentations !!",
-        "Poséidon": "Rapide et majestueux, tu règnes sur les océans avec une puissance divine. Ton calme est légendaire, mais gare à celui qui troublera tes eaux : ton trident ne sera pas là pour décorer !",
-        "Apollon": "Grand, beau et fort, tu sembles être l'idéal incarné. Mais reste humble, car une trop grosse tête risque de te laisser seul… comme le soleil, une fois la nuit tombée.",
-        "Athéna": "Sage et brillante, tu as un esprit vif capable de lire les autres d’un simple regard. Ton tempérament passionné est une force, mais veille à ne pas brûler ceux qui s’approchent trop près de toi.",
-        "Artémis": "Sauvage et captivante, tu es l’essence même de la beauté naturelle. Pourtant, tu n’en fais aucun cas et renvoies avec élégance ceux qui ne voient pas au-delà de ton apparence.",
-        "Aphrodite": "Séductrice et intelligente, ton charme est une arme redoutable que tu manies avec maîtrise. On te cède tout, mais attention: à trop vouloir, on finit parfois par tout perdre…",
-        "Arès": "Sanguin et impulsif, tu es une véritable boule d’énergie, toujours prêt à foncer tête baissée dans l’action. Mais réfléchis un peu: foncer sans plan, c’est comme vouloir courir avant de savoir marcher...",
-        "Héphaïstos": "Acharné et persévérant, tu ne comptes pas tes efforts pour atteindre tes objectifs. Mais prends garde: la vie n’est pas qu’une course. Lève parfois les yeux pour admirer les étoiles… avant qu’il ne soit trop tard.",
-        "Hadès": "Colérique et calculateur, tu as soif de pouvoir et ne recules devant rien pour l’obtenir. Ton humour masque une certaine noirceur… Après tout, tu n’es pas surnommé le maître des enfers pour rien !",
-        "Hermès": "Loyal et rapide d’esprit, tu es une personne de confiance et un pilier pour ton entourage. Ta nature protectrice te rend précieux, et on sait qu’avec toi, tout est sous contrôle.",
-        "Dionysos": "Fêtard invétéré, tu as un humour décalé et une imagination débordante. Et quand il s’agit de lever un verre, ton endurance est légendaire. Gare toutefois à ne pas finir dans un tonneaun, sans fond..."
+        "La tronçonneuse": "Complètement timbré, ta tronçonneuse est ton arme de prédilection ! L'apocalypse est pour toi une bénédiction, et ta plus grande passion est de tailler tout ce qui bouge… et même ce qui ne bouge pas. Bref, tout y passe !",
+        "Le fusil à pompe": "Quelque peu bourrin et dur(e) à cuire, ton arme favorite est le fusil à pompe ! Prenant les zombies pour du gibier, tu pars chaque dimanche à la chasse, sans oublier, bien sûr, ta fidèle bouteille de pastaga (pastis).",
+        "La brosse à dents": "Maniaque et un peu relou(e) sur les bords, ton arme favorite est ta super brosse à dents dernier cri ! Tu détestes par dessus tout les gens qui oublient le brossage du soir et n'hésites pas à les harceler jusqu'à ce qu'ils s'y mettent ! Aucun doute, les zombies ne feront pas long feu avec toi...",
+        "Le déguisement du huissier de justice": "Effrayant(e) et intransigeant(e), ton arme favorite est ton déguisement de huissier de justice ! Semant la terreur sur ton passage, tu es craint de tous. D’un simple regard, tu peux faire fuir une horde de zombies affamés...",
+        "L'AK-47": "Combattant(e) et sanguin(e), ton arme favorite est l'AK-47 ! Tu adores le gruyère et non pas seulement dans tes pâtes, mais surtout pour rendre les zombies comme tel en mitraillant dans tous les sens.",
+        "La batte de baseball": "Intrépide et tête brûlée, ton arme favorite est ta batte de baseball ! Grand(e) passionné(e) de ce sport, tu fonces dans le tas à chaque occasion, en essayant, bien sûr, de réaliser un maximum de Home Run !",
+        "Le katana": "Furtif(ve) et rapide, ton arme favorite est le katana ! Maître incontesté du sabre, tu es capable de découper une balle en plein vol ou de trancher du thon rouge pour préparer de délicieux sushis.",
+        "L'arc": "Discret(e) et à la vue aiguisée, ton arme favorite est l'arc ! Te croyant encore au Moyen Age, tu penses que la terre est plate et es persuadé(e) que ton arc en bois miteux, est l'arme la plus meurtrière au monde !"
     ])
-    func saveQuizz(completion: @escaping (Error?) -> Void) {
+
+    func saveQuizz() async throws {
         let db = Firestore.firestore()
-        
-        do {
-            try db.collection("quizzes").document(quizz.id).setData(from: quizz) { error in
-                completion(error)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            do {
+                try db.collection("quizzes").document(quizz.id).setData(from: quizz) { error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume()
+                    }
+                }
+            } catch {
+                continuation.resume(throwing: error)
             }
-        } catch {
-            completion(error)
         }
     }
-    
-    func fetchAllQuizzes(completion: @escaping ([Quizz]?, Error?) -> Void) {
+
+    func fetchAllQuizzes() async throws -> [Quizz] {
         let db = Firestore.firestore()
-        
-        db.collection("quizzes").getDocuments { snapshot, error in
-            if let error = error {
-                completion(nil, error)
-                return
+        do {
+            let snapshot = try await db.collection("quizzes").getDocuments()
+            let quizzes = try snapshot.documents.compactMap { document in
+                try document.data(as: Quizz.self)
             }
-            
-            do {
-                let quizzes = try snapshot?.documents.compactMap { document in
-                    try document.data(as: Quizz.self)
-                }
-                completion(quizzes, nil)
-            } catch {
-                completion(nil, error)
-            }
+            return quizzes
+        } catch {
+            throw error
         }
     }
 }

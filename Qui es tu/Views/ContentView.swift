@@ -43,7 +43,7 @@ struct ContentView: View {
                                             .aspectRatio(1.5, contentMode: .fit)
                                         Text(quizz.title)
                                             .font(.headline)
-                                            .padding(.vertical)
+                                            .padding(.vertical, 10)
                                             .foregroundStyle(.black)
                                             .frame(maxWidth: .infinity)
                                             .background(.white)

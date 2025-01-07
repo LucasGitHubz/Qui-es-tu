@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 class QuizzStore: ObservableObject {
     @Published var quizzList: [Quizz] = []
     @Published var quizz: Quizz = Quizz(id: "", title: "", image: "", questions: nil, resultDescriptions: nil)
@@ -25,26 +26,29 @@ class QuizzStore: ObservableObject {
     
     init(firestoreService: FirestoreService = FirestoreService()) {
         self.firestoreService = firestoreService
-        /*firestoreService.saveQuizz { error in
-            print("")
+        /*Task {
+            do {
+                try await firestoreService.saveQuizz()
+            } catch {
+                errorMessage = ""
+                showAlert = true
+            }
         }*/
         getQuizzList()
     }
 
     func getQuizzList() {
-        /*isFetchingQuizzes = true
-        firestoreService.fetchAllQuizzes { quizzes, error in
-            self.isFetchingQuizzes = false
-            if let error {
-                print("handle the error")
-                self.errorMessage = error.localizedDescription
-                self.showAlert = true
-                return
+        isFetchingQuizzes = true
+        Task {
+            do {
+                quizzList = try await firestoreService.fetchAllQuizzes()
+                isFetchingQuizzes = false
+            } catch {
+                errorMessage = error.localizedDescription
+                showAlert = true
             }
-
-            self.quizzList = quizzes ?? []
-        }*/
-         quizzList = Quizz.fakeQuizz
+        }
+         //quizzList = Quizz.fakeQuizz
     }
 
     func setQuizz(id: String) {

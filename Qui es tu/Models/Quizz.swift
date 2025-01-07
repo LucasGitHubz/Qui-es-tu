@@ -26,62 +26,62 @@ struct Quizz: Codable, Identifiable, Equatable {
     var resultDescriptions: [String: String]?
 
     static let fakeQuizz = [
-        Quizz(id: "1", title: "Animals", image: "Chat", questions: [
-            Question(number: 0, question: "Quelle serait ta réaction si un gland te tombait sur la tête ?", answers: [
-                1: "Tu cherches qui te l'a jeté iefgde ziuezy freizu",
-                2: "Tu le manges agd iegdfe fiugez çfugzeu",
-                3: "Tu le plantes digf disfgho yfoez hfuoz",
-                4: "Tu le gardes précieusement qeiuyfhoue yfouesy hfoues"
+        Quizz(id: "1", title: "Armes en cas d'apocalypse", image: "Chat", questions: [
+            Question(number: 0, question: "Quel-est ton plus grand défaut ?", answers: [
+                1: "Tu cherches qui te l'a jeté iefgde ziuezy freizu eaiugqiu fd",
+                2: "Tu le manges agd iegdfe fiugez çfugzeu eizufry ezçfy ezçioufy oeiz",
+                3: "Tu le plantes digf disfgho yfoez hfuoz sydqu yuizey frueuyz",
+                4: "Tu le gardes précieusement qeiuyfhoue yfouesy hfoueseaz idgfhiu gfiuez"
             ]),
-            Question(number: 1, question: "Que préfères-tu ?", answers: [
+            Question(number: 1, question: "Tu es plutôt ?", answers: [
                 1: "Donner la patte",
                 2: "Faire le mort quand tu entends PAN !",
                 3: "Aller chercher la balle",
                 4: "Faire le beau"
             ]),
-            Question(number: 2, question: "Quel type de soirée préfères-tu ?", answers: [
+            Question(number: 2, question: "Tu fais une chute à vélo, quelle-est ta réaction ?", answers: [
                 1: "Soirée cinéma",
                 2: "Soirée karaoké",
                 3: "Soirée chez des amis",
                 4: "Soirée dansante"
             ]),
-            Question(number: 3, question: "Quel-est ton péché mignon ?", answers: [
+            Question(number: 3, question: "Quel-est ton point fort ?", answers: [
                 1: "Le chocolat",
                 2: "Les Jelly Belly goût crotte de nez",
                 3: "Les chips",
                 4: "Les bonbons"
             ]),
-            Question(number: 4, question: "Ton élément favori est :", answers: [
+            Question(number: 4, question: "Tu écoutes principalement :", answers: [
                 1: "Air",
                 2: "Feu",
                 3: "Eau",
                 4: "Terre"
             ]),
-            Question(number: 5, question: "Quel fruit préfères-tu ?", answers: [
+            Question(number: 5, question: "Quelle huile préfères-tu ?", answers: [
                 1: "Banane",
                 2: "Noix de coco",
                 3: "Fraise",
                 4: "Orange"
             ]),
-            Question(number: 6, question: "Tu achètes un nouveau coussin chez IKEA, il est :", answers: [
+            Question(number: 6, question: "Quelle cuisson préfères-tu pour ton steak ?", answers: [
                 1: "Mou et doux",
                 2: "Dur comme un parpaing",
                 3: "Senteur crottin d'iguane",
                 4: "Avec des plumes roses"
             ]),
-            Question(number: 7, question: "Tu te décides à faire du sport :", answers: [
+            Question(number: 7, question: "Tu préfères :", answers: [
                 1: "Tu pars courir 10km",
                 2: "Tu t'entraînes à dormir les yeux ouverts",
                 3: "Tu disputes une partie endiablée de ping-pong",
                 4: "Tu fais des longueurs dans ta piscine"
             ]),
-            Question(number: 8, question: "Tu es plutôt :", answers: [
+            Question(number: 8, question: "Quelle-est ta destination favorite ?", answers: [
                 1: "Forêt",
                 2: "Savane",
                 3: "Jungle",
                 4: "Plage"
             ]),
-            Question(number: 9, question: "Quel moyen de transport préfères-tu ?", answers: [
+            Question(number: 9, question: "Quelle serait ta réaction si un policier t'attrape en train de voler une orange au marché ?", answers: [
                 1: "Avion",
                 2: "Voiture",
                 3: "Bateau",
