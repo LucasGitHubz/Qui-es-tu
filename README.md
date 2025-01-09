@@ -1,4 +1,4 @@
-## Qui es tu ? / Demo
+## Qui es tu ? / Application
 
 ![Preview](https://github.com/LucasGitHubz/Qui-es-tu/blob/main/Preview.jpg)
 
@@ -14,6 +14,11 @@ Après avoir fait le thème révélant mon arme en cas d'apocalypse, je suis tom
      - English (en cours)
 
 ## Installation
+Télécharge l'app ici:
+https://apps.apple.com/fr/app/qui-es-tu/id6740242586
+
+Ou bien
+
 1. Télécharge ce repo ou fork le.
 2. Enregistre toi sur Firebase and télécharge ton propre GoogleService-info.plist.
 3. Ajoute le au projet.
