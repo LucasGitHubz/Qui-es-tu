@@ -30,6 +30,29 @@ struct Quizz: Codable, Identifiable, Equatable, Sendable {
         resultDescriptions: nil
     )
 
+    /// Short titles for themes whose full title is too long for a grid card.
+    private static let displayTitles: [String: String] = [
+        "weapons": "Apocalypse"
+    ]
+
+    /// One-line teasers shown under the title of the featured quiz.
+    private static let teasers: [String: String] = [
+        "animals": "Lynx, loup ou ornithorynque ?",
+        "cities": "Tokyo, Miami ou Amsterdam ?",
+        "colors": "Rouge, violet ou turquoise ?",
+        "creatures": "Dragon, sirène ou kraken ?",
+        "gods": "Zeus, Athéna ou Hadès ?",
+        "weapons": "Ton arme anti-zombies ?"
+    ]
+
+    var displayTitle: String {
+        Self.displayTitles[id] ?? title
+    }
+
+    var teaser: String? {
+        Self.teasers[id]
+    }
+
 #if DEBUG
     static let previewCatalog: [Quizz] = {
         let questions = (1...10).map {

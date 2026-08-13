@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct QuizzView: View {
+    /// Called when the user closes the result screen, not when they back out mid-quiz.
+    var onFinish: () -> Void = {}
+
     @Environment(QuizzStore.self) private var quizzStore
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ZStack {
             if !quizzStore.isQuizzFinished {
@@ -122,6 +125,7 @@ struct QuizzView: View {
                         .clipShape(.rect(cornerRadius: 10))
                         Spacer()
                         Button {
+                            onFinish()
                             dismiss()
                         } label: {
                             Text("Terminer")
