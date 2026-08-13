@@ -8,18 +8,22 @@
 import SwiftUI
 
 struct QuizzView: View {
-    @EnvironmentObject var quizzStore: QuizzStore
+    @Environment(QuizzStore.self) private var quizzStore
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack {
             if !quizzStore.isQuizzFinished {
                 VStack {
-                    ProgressView(value: Double(quizzStore.questionIndex) + 1, total: 10.0)
-                        .progressViewStyle(LinearProgressViewStyle())
+                    ProgressView(
+                        value: Double(quizzStore.questionIndex) + 1,
+                        total: Double(max(quizzStore.questionCount, 1))
+                    )
+                        .progressViewStyle(.linear)
                         .tint(.white)
                         .padding(.bottom)
                         .padding(.horizontal, 5)
+                        .accessibilityIdentifier("quiz.progress")
                     Text(quizzStore.getQuestion().question)
                         .font(.title3.bold())
                         .multilineTextAlignment(.center)
@@ -34,7 +38,7 @@ struct QuizzView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(lineWidth: 4)
                                 .foregroundStyle(
-                                    LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    AppTheme.accentGradient
                                 )
                         }
                     Spacer()
@@ -82,6 +86,7 @@ struct QuizzView: View {
                                     .foregroundStyle(.white)
                             }
                     }
+                    .accessibilityIdentifier("quiz.validate")
                 }
                 .padding()
             } else {
@@ -90,11 +95,11 @@ struct QuizzView: View {
                 } else {
                     VStack {
                         VStack {
-                            Text(quizzStore.bestMatchResult?.0 ?? "Lynx")
+                            Text(quizzStore.bestMatchResult?.name ?? "Lynx")
                                 .font(.title.bold())
                                 .foregroundStyle(.black)
                                 .padding(.bottom)
-                            Image(quizzStore.bestMatchResult?.0 ?? "Lynx")
+                            Image(quizzStore.bestMatchResult?.name ?? "Lynx")
                                 .resizable()
                                 .frame(height: 200)
                                 .frame(maxWidth: .infinity)
@@ -103,11 +108,11 @@ struct QuizzView: View {
                                     RoundedRectangle(cornerRadius: 5)
                                         .stroke(lineWidth: 4)
                                         .foregroundStyle(
-                                            LinearGradient(colors: [Color("Red"), Color("Turquoise")], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                            AppTheme.accentGradient
                                         )
                                 }
                                 .background(.black.opacity(0.1))
-                            Text(quizzStore.bestMatchResult?.1 ?? "Description...")
+                            Text(quizzStore.bestMatchResult?.description ?? "Description...")
                                 .font(.headline)
                                 .foregroundStyle(.black)
                                 .padding(.vertical)
@@ -132,17 +137,19 @@ struct QuizzView: View {
                 }
             }
         }
-        .background(
-            LinearGradient(colors: [Color("Turquoise").opacity(0.5), Color("Red").opacity(0.5)], startPoint: .top, endPoint: .bottom)
-            .ignoresSafeArea()
-        )
+        .background(AppTheme.screenGradient.ignoresSafeArea())
         .onDisappear {
             quizzStore.resetQuizz()
+        }
+        .task(id: quizzStore.isQuizzFinished) {
+            if quizzStore.isQuizzFinished {
+                await quizzStore.revealResult()
+            }
         }
     }
 }
 
 #Preview {
     QuizzView()
-        .environmentObject(QuizzStore())
+        .environment(QuizzStore(quizzes: Quizz.previewCatalog))
 }

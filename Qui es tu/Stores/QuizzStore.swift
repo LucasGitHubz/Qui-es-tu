@@ -5,51 +5,81 @@
 //  Created by Lucas on 20/12/2024.
 //
 
-import SwiftUI
+import Foundation
+import Observation
 
 @MainActor
-class QuizzStore: ObservableObject {
-    @Published var quizzList: [Quizz] = []
-    @Published var quizz: Quizz = Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
-    @Published var questionIndex = 0
-    @Published var userAnswers = [Int]()
-    @Published var isQuizzFinished = false
-    @Published var bestMatchResult: (String, String)? = nil
+@Observable
+final class QuizzStore {
+    private(set) var quizzList: [Quizz]
+    private(set) var quizz: Quizz = .empty
+    private(set) var questionIndex = 0
+    private(set) var userAnswers: [Int] = []
+    private(set) var isQuizzFinished = false
+    private(set) var bestMatchResult: QuizResult?
 
-    @Published var isLoadingResult = false
-    @Published var isFetchingQuizzes = false
+    private(set) var isLoadingResult = false
+    private(set) var isFetchingQuizzes = false
 
-    @Published var errorMessage = ""
-    @Published var showAlert = false
+    private(set) var errorMessage = ""
+    var showAlert = false
 
-    private let firestoreService: FirestoreService
-    
-    init(firestoreService: FirestoreService = FirestoreService()) {
+    private let firestoreService: any QuizzService
+
+    init(
+        firestoreService: any QuizzService = FirestoreService(),
+        quizzes: [Quizz] = []
+    ) {
         self.firestoreService = firestoreService
-        getQuizzList()
+        self.quizzList = quizzes
     }
 
-    func getQuizzList() {
+    var questionCount: Int {
+        quizz.questions?.count ?? 0
+    }
+
+    var isCurrentQuestionAnswered: Bool {
+        userAnswers.indices.contains(questionIndex)
+    }
+
+    func loadQuizzesIfNeeded() async {
+        guard quizzList.isEmpty else {
+            return
+        }
+
+        await loadQuizzes()
+    }
+
+    func loadQuizzes() async {
+        guard !isFetchingQuizzes else {
+            return
+        }
+
         isFetchingQuizzes = true
-        Task {
-            do {
-                quizzList = try await firestoreService.fetchAllQuizzes()
-                isFetchingQuizzes = false
-            } catch {
-                errorMessage = error.localizedDescription
-                showAlert = true
-            }
+        showAlert = false
+        errorMessage = ""
+        defer { isFetchingQuizzes = false }
+
+        do {
+            quizzList = try await firestoreService.fetchAllQuizzes()
+        } catch is CancellationError {
+            return
+        } catch {
+            errorMessage = error.localizedDescription
+            showAlert = true
         }
     }
 
     func setQuizz(id: String) {
-        quizz = quizzList.first(where: { $0.id == id }) ?? Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
+        quizz = quizzList.first(where: { $0.id == id }) ?? .empty
     }
 
     func getQuestion() -> Quizz.Question {
-        guard let questions = quizz.questions else {
+        guard let questions = quizz.questions,
+              questions.indices.contains(questionIndex) else {
             return Quizz.Question(number: 0, question: "", answers: [:])
         }
+
         return questions[questionIndex]
     }
 
@@ -68,64 +98,54 @@ class QuizzStore: ObservableObject {
         return userAnswers[questionIndex] == answerNumber
     }
 
-
     func validateAnswer() {
-        if userAnswers.count > questionIndex {
-            // If questionIndex + 1 == 10, that means the last question has been reached.
-            // In that case, end the quizz with the result.
-            if (questionIndex + 1) == 10 {
-                calculateBestMatch()
-                showResult()
-            } else {
-                // Otherwise continue the quizz
-                questionIndex += 1
-            }
+        guard isCurrentQuestionAnswered, questionCount > 0 else {
+            return
+        }
+
+        if questionIndex + 1 >= questionCount {
+            calculateBestMatch()
+            isLoadingResult = true
+            isQuizzFinished = true
+        } else {
+            questionIndex += 1
         }
     }
 
-    private func showResult() {
-        withAnimation {
-            isLoadingResult = true
-            isQuizzFinished = true
+    func revealResult() async {
+        guard isLoadingResult else {
+            return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            withAnimation {
-                self.isLoadingResult = false
-            }
+
+        do {
+            try await Task.sleep(for: .seconds(3))
+            try Task.checkCancellation()
+            isLoadingResult = false
+        } catch {
+            return
         }
     }
 
     func calculateBestMatch() {
-        // Ensure there are answers to compare
         guard let matchingResults = quizz.matchingResults,
               let resultDescriptions = quizz.resultDescriptions else {
             bestMatchResult = nil
             return
         }
 
-        // Variable to track the best match
-        var bestMatch: (name: String, matches: Int) = ("", 0)
-
-        // Iterate through all matching results
-        for (animal, answers) in matchingResults {
-            // Compare user's answers with the current result
-            let matchCount = zip(userAnswers, answers).filter { $0 == $1 }.count
-            
-            // Update the best match if this one has more matches
-            if matchCount > bestMatch.matches {
-                bestMatch = (name: animal, matches: matchCount)
-            }
-        }
-
-        // Retrieve the description of the best match
-        bestMatchResult = (bestMatch.name, resultDescriptions[bestMatch.name] ?? "Description missing...")
+        bestMatchResult = QuizMatcher.bestMatch(
+            userAnswers: userAnswers,
+            matchingResults: matchingResults,
+            resultDescriptions: resultDescriptions
+        )
     }
 
     func resetQuizz() {
-        quizz = Quizz(id: "", title: "", image: "", questions: nil, matchingResults: nil, resultDescriptions: nil)
+        quizz = .empty
         questionIndex = 0
-        userAnswers = [Int]()
+        userAnswers = []
         isQuizzFinished = false
+        isLoadingResult = false
         bestMatchResult = nil
     }
 }

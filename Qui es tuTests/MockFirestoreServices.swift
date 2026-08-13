@@ -7,11 +7,14 @@
 
 @testable import Qui_es_tu
 
-class MockFirestoreService: FirestoreService {
-    var quizzesToReturn: [Quizz]?
-    var errorToReturn: Error?
-    
-    override func fetchAllQuizzes(completion: @escaping ([Quizz]?, Error?) -> Void) {
-        completion(quizzesToReturn, errorToReturn)
+final class MockFirestoreService: QuizzService {
+    var result: Result<[Quizz], Error>
+
+    init(result: Result<[Quizz], Error> = .success([])) {
+        self.result = result
+    }
+
+    func fetchAllQuizzes() async throws -> [Quizz] {
+        try result.get()
     }
 }

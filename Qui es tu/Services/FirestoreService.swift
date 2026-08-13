@@ -7,17 +7,13 @@
 
 import FirebaseFirestore
 
-class FirestoreService {
+struct FirestoreService: QuizzService {
     func fetchAllQuizzes() async throws -> [Quizz] {
         let db = Firestore.firestore()
-        do {
-            let snapshot = try await db.collection("quizzes").getDocuments()
-            let quizzes = try snapshot.documents.compactMap { document in
-                try document.data(as: Quizz.self)
-            }
-            return quizzes
-        } catch {
-            throw error
+        let snapshot = try await db.collection("quizzes").getDocuments()
+
+        return try snapshot.documents.map { document in
+            try document.data(as: Quizz.self)
         }
     }
 }

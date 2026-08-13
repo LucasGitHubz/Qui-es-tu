@@ -41,10 +41,7 @@ struct ParticleAnimationView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(
-            LinearGradient(colors: [Color("Turquoise").opacity(0.5), Color("Red").opacity(0.5)], startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-        )
+        .background(AppTheme.screenGradient.ignoresSafeArea())
     }
 }
 

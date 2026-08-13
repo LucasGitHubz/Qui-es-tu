@@ -75,4 +75,3 @@ struct Particle: Identifiable {
     var radius: CGFloat // Distance from the center
     var speed: CGFloat // Speed of movement
 }
-

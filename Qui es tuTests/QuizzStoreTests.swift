@@ -8,62 +8,74 @@
 import XCTest
 @testable import Qui_es_tu
 
+@MainActor
 final class QuizzStoreTests: XCTestCase {
-    func test_getQuizzList_success() {
-        // Given (Arrange)
-        let mockService = MockFirestoreService()
-        mockService.quizzesToReturn = Quizz.fakeQuizz
+    func testLoadQuizzesSuccess() async {
+        let quizzes = [makeQuiz(id: "1")]
+        let mockService = MockFirestoreService(result: .success(quizzes))
         let store = QuizzStore(firestoreService: mockService)
 
-        // When (Act)
-        store.getQuizzList()
-        
-        // Then (Assert)
+        await store.loadQuizzes()
+
         XCTAssertFalse(store.isFetchingQuizzes)
-        XCTAssertEqual(store.quizzList, Quizz.fakeQuizz)
+        XCTAssertEqual(store.quizzList, quizzes)
+        XCTAssertFalse(store.showAlert)
     }
 
-    func test_getQuizzList_failure() {
-        let mockService = MockFirestoreService()
-        mockService.errorToReturn = NSError(domain: "test", code: 1, userInfo: nil)
+    func testLoadQuizzesFailureEndsLoadingAndShowsAlert() async {
+        let error = NSError(domain: "test", code: 1)
+        let mockService = MockFirestoreService(result: .failure(error))
         let store = QuizzStore(firestoreService: mockService)
-        
-        store.getQuizzList()
+
+        await store.loadQuizzes()
 
         XCTAssertFalse(store.isFetchingQuizzes)
         XCTAssertTrue(store.showAlert)
-        XCTAssertEqual(store.errorMessage, "The operation couldn’t be completed. (test error 1.)")
+        XCTAssertFalse(store.errorMessage.isEmpty)
     }
 
-    func test_setQuizz_found() {
-        let store = QuizzStore()
-        store.quizzList = [Quizz(id: "1", title: "Quiz 1", image: "", questions: nil, resultDescriptions: nil)]
-        
+    func testSuccessfulRetryClearsPreviousError() async {
+        let mockService = MockFirestoreService(
+            result: .failure(NSError(domain: "test", code: 1))
+        )
+        let store = QuizzStore(firestoreService: mockService)
+        await store.loadQuizzes()
+
+        mockService.result = .success([makeQuiz(id: "1")])
+        await store.loadQuizzes()
+
+        XCTAssertFalse(store.showAlert)
+        XCTAssertTrue(store.errorMessage.isEmpty)
+    }
+
+    func testSetQuizzFound() {
+        let quiz = makeQuiz(id: "1")
+        let store = QuizzStore(quizzes: [quiz])
+
         store.setQuizz(id: "1")
-        
+
         XCTAssertEqual(store.quizz.id, "1")
     }
 
-    func test_setQuizz_notFound() {
-        let store = QuizzStore()
-        store.quizzList = [Quizz(id: "1", title: "Quiz 1", image: "", questions: nil, resultDescriptions: nil)]
-        
+    func testSetQuizzNotFoundUsesEmptyQuiz() {
+        let store = QuizzStore(quizzes: [makeQuiz(id: "1")])
+
         store.setQuizz(id: "2")
-        
+
         XCTAssertEqual(store.quizz.id, "")
     }
 
-    func test_getQuestion_withQuestions() {
-        let store = QuizzStore()
-        store.quizz = Quizz(id: "1", title: "Quizz", image: "", questions: [Quizz.Question(number: 1, question: "Q1", answers: [:])], resultDescriptions: nil)
-        store.questionIndex = 0
-        
+    func testGetQuestionWithQuestions() {
+        let quiz = makeQuiz(id: "1", questionCount: 1)
+        let store = QuizzStore(quizzes: [quiz])
+        store.setQuizz(id: quiz.id)
+
         let question = store.getQuestion()
 
         XCTAssertEqual(question.number, 1)
     }
 
-    func test_getQuestion_noQuestions() {
+    func testGetQuestionWithoutQuestionsReturnsEmptyQuestion() {
         let store = QuizzStore()
 
         let question = store.getQuestion()
@@ -71,97 +83,121 @@ final class QuizzStoreTests: XCTestCase {
         XCTAssertEqual(question.number, 0)
     }
 
-    func test_selectAnswer_appendsNewAnswer() {
-        let store = QuizzStore()
-        store.userAnswers = []
+    func testSelectAnswerAppendsNewAnswer() {
+        let store = preparedStore(questionCount: 1)
 
         store.selectAnswer(answerNumber: 1)
 
         XCTAssertEqual(store.userAnswers, [1])
     }
 
-    func test_selectAnswer_replacesExistingAnswer() {
-        let store = QuizzStore()
-        store.userAnswers = [1]
-        store.questionIndex = 0
+    func testSelectAnswerReplacesExistingAnswer() {
+        let store = preparedStore(questionCount: 1)
+        store.selectAnswer(answerNumber: 1)
 
         store.selectAnswer(answerNumber: 2)
 
         XCTAssertEqual(store.userAnswers, [2])
     }
 
-    func test_isAnswerSelected_true() {
-        let store = QuizzStore()
-        store.userAnswers = [2]
-        store.questionIndex = 0
+    func testIsAnswerSelectedReturnsTrueForSelection() {
+        let store = preparedStore(questionCount: 1)
+        store.selectAnswer(answerNumber: 2)
 
         let isSelected = store.isAnswerSelected(2)
 
         XCTAssertTrue(isSelected)
     }
 
-    func test_isAnswerSelected_false() {
-        let store = QuizzStore()
-        store.userAnswers = [1]
-        store.questionIndex = 0
+    func testIsAnswerSelectedReturnsFalseForAnotherAnswer() {
+        let store = preparedStore(questionCount: 1)
+        store.selectAnswer(answerNumber: 1)
 
         let isSelected = store.isAnswerSelected(2)
 
         XCTAssertFalse(isSelected)
     }
 
-    func test_isAnswerSelected_noAnswers() {
-        let store = QuizzStore()
-        store.userAnswers = []
-        store.questionIndex = 0
+    func testIsAnswerSelectedReturnsFalseWithoutAnswers() {
+        let store = preparedStore(questionCount: 1)
 
         let isSelected = store.isAnswerSelected(1)
 
         XCTAssertFalse(isSelected)
     }
 
-
-    func test_validateAnswer_incrementsIndex() {
-        let store = QuizzStore()
-        store.userAnswers = [1]
-        store.questionIndex = 0
+    func testValidateAnswerIncrementsIndex() {
+        let store = preparedStore(questionCount: 2)
+        store.selectAnswer(answerNumber: 1)
 
         store.validateAnswer()
 
         XCTAssertEqual(store.questionIndex, 1)
     }
 
-    func test_validateAnswer_finishesQuizz() {
-        let store = QuizzStore()
-        store.userAnswers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        store.questionIndex = 9
+    func testValidateAnswerUsesActualQuestionCountToFinish() {
+        let store = preparedStore(questionCount: 1)
+        store.selectAnswer(answerNumber: 1)
 
         store.validateAnswer()
 
         XCTAssertTrue(store.isQuizzFinished)
+        XCTAssertTrue(store.isLoadingResult)
     }
 
-    func test_calculateBestMatch() {
-        let store = QuizzStore()
-        store.quizz = Quizz(id: "1", title: "Quiz", image: "", questions: nil, matchingResults: ["Dog": [1, 2, 3], "Cat": [2, 1, 2]], resultDescriptions: ["Dog": "Friendly", "Cat": "Cute"])
-        // [2, 2, 2] will match one time with dog and two times with cat
-        // Cat should be chosen.
-        store.userAnswers = [2, 3, 1]
+    func testCalculateBestMatch() {
+        let quiz = Quizz(
+            id: "1",
+            title: "Quiz",
+            image: "",
+            questions: [makeQuestion(number: 1)],
+            matchingResults: ["Dog": [1], "Cat": [2]],
+            resultDescriptions: ["Dog": "Friendly", "Cat": "Cute"]
+        )
+        let store = QuizzStore(quizzes: [quiz])
+        store.setQuizz(id: quiz.id)
+        store.selectAnswer(answerNumber: 2)
 
         store.calculateBestMatch()
 
-        XCTAssertEqual(store.bestMatchResult?.0, "Cat")
+        XCTAssertEqual(store.bestMatchResult, QuizResult(name: "Cat", description: "Cute"))
     }
 
-    func test_resetQuizz() {
-        let store = QuizzStore()
-        store.quizz = Quizz(id: "1", title: "Quiz", image: "", questions: nil, resultDescriptions: nil)
-        store.isQuizzFinished = true
+    func testResetQuizzClearsSessionState() {
+        let store = preparedStore(questionCount: 1)
+        store.selectAnswer(answerNumber: 1)
+        store.validateAnswer()
 
         store.resetQuizz()
 
         XCTAssertEqual(store.quizz.id, "")
         XCTAssertFalse(store.isQuizzFinished)
         XCTAssertEqual(store.userAnswers.count, 0)
+    }
+
+    private func preparedStore(questionCount: Int) -> QuizzStore {
+        let quiz = makeQuiz(id: "quiz", questionCount: questionCount)
+        let store = QuizzStore(quizzes: [quiz])
+        store.setQuizz(id: quiz.id)
+        return store
+    }
+
+    private func makeQuiz(id: String, questionCount: Int = 1) -> Quizz {
+        Quizz(
+            id: id,
+            title: "Quiz",
+            image: "",
+            questions: (1...questionCount).map(makeQuestion),
+            matchingResults: ["Result": Array(repeating: 1, count: questionCount)],
+            resultDescriptions: ["Result": "Description"]
+        )
+    }
+
+    private func makeQuestion(number: Int) -> Quizz.Question {
+        Quizz.Question(
+            number: number,
+            question: "Question",
+            answers: [1: "First", 2: "Second"]
+        )
     }
 }
