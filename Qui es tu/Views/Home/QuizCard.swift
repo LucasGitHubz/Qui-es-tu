@@ -45,6 +45,7 @@ struct QuizCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     HStack(spacing: 14) {
         QuizCard(quiz: Quizz.previewCatalog[0]) {}
@@ -53,3 +54,4 @@ struct QuizCard: View {
     .padding(20)
     .background { HomeBackground() }
 }
+#endif

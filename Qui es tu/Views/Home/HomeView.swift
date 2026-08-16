@@ -57,6 +57,8 @@ struct HomeView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     HomeView(quizzes: Quizz.previewCatalog) { _ in }
 }
+#endif

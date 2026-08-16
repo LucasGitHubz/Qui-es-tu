@@ -153,7 +153,9 @@ struct QuizzView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     QuizzView()
         .environment(QuizzStore(quizzes: Quizz.previewCatalog))
 }
+#endif

@@ -81,8 +81,10 @@ struct FeaturedQuizCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     FeaturedQuizCard(quiz: Quizz.previewCatalog[3]) {}
         .padding(20)
         .background { HomeBackground() }
 }
+#endif
