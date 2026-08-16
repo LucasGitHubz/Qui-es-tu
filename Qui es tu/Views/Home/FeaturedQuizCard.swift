@@ -22,7 +22,7 @@ struct FeaturedQuizCard: View {
         Color.clear
             .frame(height: 200)
             .overlay {
-                Image(quiz.image)
+                Image(AppAsset.name(quiz.image))
                     .resizable()
                     .scaledToFill()
             }

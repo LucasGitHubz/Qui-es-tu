@@ -37,7 +37,7 @@ struct QuizCard: View {
         Color.clear
             .frame(height: 96)
             .overlay {
-                Image(quiz.image)
+                Image(AppAsset.name(quiz.image))
                     .resizable()
                     .scaledToFill()
             }

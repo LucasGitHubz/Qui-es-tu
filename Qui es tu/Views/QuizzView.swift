@@ -102,7 +102,7 @@ struct QuizzView: View {
                                 .font(.title.bold())
                                 .foregroundStyle(.black)
                                 .padding(.bottom)
-                            Image(quizzStore.bestMatchResult?.name ?? "Lynx")
+                            Image(AppAsset.name(quizzStore.bestMatchResult?.name ?? "Lynx"))
                                 .resizable()
                                 .frame(height: 200)
                                 .frame(maxWidth: .infinity)
