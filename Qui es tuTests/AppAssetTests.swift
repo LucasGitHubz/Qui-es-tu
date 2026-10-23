@@ -7,17 +7,14 @@ final class AppAssetTests: XCTestCase {
 
         let normalizedName = AppAsset.name(composedName)
 
-        XCTAssertEqual(normalizedName, "Sire\u{300}ne")
-        XCTAssertTrue(normalizedName.isDecomposed)
+        // String equality treats NFC and NFD as equivalent, so compare the actual scalars.
+        XCTAssertEqual(
+            Array(normalizedName.unicodeScalars),
+            Array("Sire\u{300}ne".unicodeScalars)
+        )
     }
 
     func testNameLeavesASCIIUnchanged() {
         XCTAssertEqual(AppAsset.name("Dragon"), "Dragon")
-    }
-}
-
-private extension String {
-    var isDecomposed: Bool {
-        self == decomposedStringWithCanonicalMapping
     }
 }

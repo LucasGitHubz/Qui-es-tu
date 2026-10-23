@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Ornithorynque.jpg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Ornithorynque.jpg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Ornithorynque.jpg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

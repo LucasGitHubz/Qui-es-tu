@@ -1,8 +1,8 @@
 import UIKit
 import XCTest
+@testable import Qui_es_tu
 
-/// Temporary diagnostic: verifies every quiz asset resolves through UIImage(named:)
-/// in the iOS runtime, in both NFC (precomposed) and NFD (decomposed) forms.
+/// Checks the bundled catalog, including the Retina renditions used by distributed iPhone apps.
 final class AssetPresenceTests: XCTestCase {
     private static let names = [
         // Animals
@@ -41,5 +41,34 @@ final class AssetPresenceTests: XCTestCase {
         }
 
         XCTAssertTrue(failures.isEmpty, "Unresolved assets: \(failures.joined(separator: ", "))")
+    }
+
+    func testEveryAssetLoadsForATwoTimesIPhoneDisplay() throws {
+        try assertEveryAssetLoads(at: 2)
+    }
+
+    func testEveryAssetLoadsForAThreeTimesIPhoneDisplay() throws {
+        try assertEveryAssetLoads(at: 3)
+    }
+
+    private func assertEveryAssetLoads(at scale: CGFloat) throws {
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(userInterfaceIdiom: .phone),
+            UITraitCollection(displayScale: scale)
+        ])
+
+        for name in Self.names {
+            let image = try XCTUnwrap(
+                UIImage(named: AppAsset.name(name), in: .main, compatibleWith: traits),
+                "Missing \(name) at \(scale)×"
+            )
+            // Xcode can thin a test build to the destination's scale, so a request
+            // for the other Retina scale may fall back. The archive verifier
+            // separately checks that both exact renditions are packaged.
+            XCTAssertTrue([2, 3].contains(image.scale), "\(name) has no Retina rendition")
+            let bitmap = try XCTUnwrap(image.cgImage, "\(name) has no decodable bitmap")
+            XCTAssertGreaterThan(bitmap.width, 0)
+            XCTAssertGreaterThan(bitmap.height, 0)
+        }
     }
 }

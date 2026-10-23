@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Arès.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Arès.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Arès.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

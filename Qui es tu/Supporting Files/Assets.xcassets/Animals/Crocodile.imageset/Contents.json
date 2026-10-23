@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Crocodile.jpg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Crocodile.jpg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Crocodile.jpg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

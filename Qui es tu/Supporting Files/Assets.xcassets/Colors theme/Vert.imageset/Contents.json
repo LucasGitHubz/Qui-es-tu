@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Vert.png",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Vert.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Vert.png",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

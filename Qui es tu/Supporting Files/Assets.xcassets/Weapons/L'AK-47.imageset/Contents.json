@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "L'AK-47.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "L'AK-47.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "L'AK-47.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

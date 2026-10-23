@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "La brosse à dents.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "La brosse à dents.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "La brosse à dents.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

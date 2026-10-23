@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Kraken.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Kraken.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Kraken.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

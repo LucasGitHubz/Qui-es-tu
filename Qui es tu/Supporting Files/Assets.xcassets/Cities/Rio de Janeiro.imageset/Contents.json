@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Rio de Janeiro.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Rio de Janeiro.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Rio de Janeiro.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {

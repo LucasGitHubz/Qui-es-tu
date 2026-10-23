@@ -24,6 +24,22 @@ Ou bien
 3. Ajoute le au projet.
 4. Enjoy !
 
+## Vérification des images avant publication
+
+Les images bitmap ont des entrées explicites 1x, 2x et 3x. Les trois entrées
+réutilisent le fichier original ; les vues redimensionnent les images à l'affichage.
+Pour vérifier les fichiers et les rendus présents dans une archive Release :
+
+```sh
+python3 scripts/verify-image-assets.py
+python3 scripts/verify-image-assets.py "/chemin/Qui es tu.xcarchive/Products/Applications/Qui es tu.app/Assets.car"
+```
+
+Pour un catalogue réduit à un appareil, ajouter `--scale 2` ou `--scale 3`.
+Exécuter aussi les tests `AssetPresenceTests` en Release avec
+`ENABLE_TESTABILITY=YES` passé à `xcodebuild test` (pour les imports `@testable`).
+Enfin, vérifier l'accueil et un résultat de quiz depuis le nouveau build TestFlight.
+
 ## Me contacter
 - Email: lucasamelin14@gmail.com
 - Linkedin: <a href="https://www.linkedin.com/in/lucas-amelin-3b8b85190/">Linkedin</a>

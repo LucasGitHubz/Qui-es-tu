@@ -2,7 +2,18 @@
   "images": [
     {
       "filename": "Chimère.jpeg",
-      "idiom": "universal"
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "Chimère.jpeg",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "Chimère.jpeg",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
   "info": {
