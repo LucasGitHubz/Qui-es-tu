@@ -96,7 +96,8 @@ export const publishWeeklyQuiz = onSchedule({ region, schedule: '0 18 * * 5', ti
 
 export const notifyQuizRelease = onDocumentCreated({ region, document: 'quizReleases/{quizID}', retry: true }, async event => {
   const quiz = event.data?.data();
-  if (!quiz || !validID(quiz.id) || quiz.releasedAt.toMillis() > Date.now()) return;
+  if (!quiz || !validID(quiz.id) || quiz.releasedAt.toMillis() > Date.now()
+      || quiz.announcementEnabled === false) return;
   const content = await db.doc(`paidQuizzes/${quiz.id}`).get();
   if (!content.exists) return;
   const delivery = db.doc(`notificationDeliveries/${quiz.id}`);

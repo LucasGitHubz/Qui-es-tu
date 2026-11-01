@@ -1,0 +1,42 @@
+{
+  "version": "1.2.0",
+  "build": "8",
+  "appStoreProductID": "com.lucasamelin.quiestu.quiz.familier",
+  "appStoreProductAppleID": "6829542041",
+  "priceBaseCountry": "France",
+  "targetPriceEUR": "0.99",
+  "firebaseProject": "qui-es-tu-d441b",
+  "privateDraftDocument": "quizDrafts/familier",
+  "artworkBaseURL": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/",
+  "publicReleaseStatus": "catalogue-and-paid-content-available-for-testflight",
+  "archiveStatus": "uploaded-to-app-store-connect",
+  "purchasesEnabledInCandidate": true,
+  "adsEnabled": false,
+  "onePieceStatus": "private-unapproved-draft",
+  "notes": [
+    "Build 7 was an initial technical upload with purchases disabled; build 8 is the intended TestFlight candidate.",
+    "App and in-app purchases are not submitted for App Review by this upload.",
+    "Complete genuine sandbox purchase, paid-content delivery, restoration and device push checks before public launch.",
+    "Archive exports report missing debug symbols for several third-party Firebase/gRPC frameworks; app upload itself succeeds."
+  ],
+  "appStoreProductPriceStatus": "configured-0.99-EUR-base-France",
+  "paidContentDocument": "paidQuizzes/familier",
+  "catalogueDocument": "quizReleases/familier",
+  "releaseAnnouncementEnabled": false,
+  "appStoreProductTerritories": "all-175",
+  "appStoreVersionStatus": "Prepare for Submission",
+  "appStoreBuildProcessingStatus": "processed; associated with version 1.2.0; Missing Compliance",
+  "appStoreBuildURL": "https://appstoreconnect.apple.com/apps/6740242586/testflight/ios/eb846813-532e-4476-9595-df43568dca55/metadata",
+  "appStoreProductStatus": "Prepare for Submission",
+  "remainingBeforePublicLaunch": [
+    "Determine and complete the build encryption/export-compliance declaration, taking the bundled Firebase/gRPC crypto dependencies into account.",
+    "Attach an accurate in-app-purchase review screenshot and submit the first non-consumable and Premium with the app version.",
+    "Validate actual sandbox purchase, private quiz download, restoration and expiry on device.",
+    "Complete device notification testing; announce the familiar quiz only after it is publicly available.",
+    "Finish the separate AdMob consent setup before enabling banner ads.",
+    "Review and update App Store privacy answers for optional analytics/diagnostics and purchases before submitting the version. Current public label says Data Not Collected."
+  ],
+  "canonicalPrivacyURL": "https://over-tech-apps.pages.dev/apps/qui-es-tu/privacy/",
+  "canonicalSupportURL": "https://over-tech-apps.pages.dev/apps/qui-es-tu/support/",
+  "appStorePrivacyURLStatus": "saved-for-next-app-version"
+}

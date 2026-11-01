@@ -1,0 +1,57 @@
+{
+  "tool": "Built-in image_gen",
+  "format": "Landscape fantasy wallpaper, JPEG conversion at quality 90 for app delivery",
+  "commonPrompt": "Use case: stylized-concept. One finished ORIGINAL magical animal familiar wallpaper for Qui es-tu, landscape 16:9. Richly detailed painterly digital fantasy concept art, cinematic light, textured natural materials, atmospheric environment; consistent premium fantasy series. One animal only; full body prominent and centered in the central half so it survives portrait iPhone cropping, environment extends at sides. No humans, text, logos, border, collage or interface; no recognizable franchise character.",
+  "subjects": [
+    {
+      "name": "Le renard des brumes",
+      "file": "renard-des-brumes.jpg",
+      "prompt": "Le renard des brumes: silver and russet fox with vaporous paws, luminous teal eyes and one natural fluffy tail dissolving into mist, on a mossy stone in a turquoise mist forest at dawn."
+    },
+    {
+      "name": "Le dragon de braise",
+      "file": "dragon-de-braise.jpg",
+      "prompt": "Le dragon de braise: cat-sized copper and charcoal dragon with amber embers, four legs and two wings on volcanic basalt beside a campfire at golden dusk."
+    },
+    {
+      "name": "Le hibou des astres",
+      "file": "hibou-des-astres.jpg",
+      "prompt": "Le hibou des astres: midnight-blue owl with star-speckled feathers and amber eyes on an observatory stone under an indigo starry sky."
+    },
+    {
+      "name": "Le loup des aurores",
+      "file": "loup-des-aurores.jpg",
+      "prompt": "Le loup des aurores: silver and charcoal wolf with subtle auroral glow on a snowy ridge above pine forests under green and violet northern lights."
+    },
+    {
+      "name": "Le chat des ombres",
+      "file": "chat-des-ombres.jpg",
+      "prompt": "Le chat des ombres: elegant ebony cat with green eyes and silver-violet highlights on a moonlit stone windowsill in a Gothic garden."
+    },
+    {
+      "name": "Le cerf des clairières",
+      "file": "cerf-des-clairieres.jpg",
+      "prompt": "Le cerf des clairières: small golden-brown stag with leafy blossoming antlers in a sunlit woodland glade with moss and a brook."
+    },
+    {
+      "name": "La loutre des marées",
+      "file": "loutre-des-marees.jpg",
+      "prompt": "La loutre des marées: playful chestnut otter with pearlescent whiskers and floating water spheres on a river rock beside a turquoise coast."
+    },
+    {
+      "name": "Le corbeau d’encre",
+      "file": "corbeau-dencre.jpg",
+      "prompt": "Le corbeau d’encre: iridescent black-violet raven with silver eyes and a subtle ribbon of floating ink, on a branch by overgrown library ruins in an autumn forest."
+    },
+    {
+      "name": "La tortue de jade",
+      "file": "tortue-de-jade.jpg",
+      "prompt": "La tortue de jade: jade-shell land tortoise carrying a miniature moss and fern garden beside a tranquil pool in golden morning mist."
+    },
+    {
+      "name": "Le griffon du vent",
+      "file": "griffon-du-vent.jpg",
+      "prompt": "Le griffon du vent: dog-sized eagle-lion griffin with two copper-gold wings on an alpine cliff at sunrise, coherent four-legged anatomy."
+    }
+  ]
+}

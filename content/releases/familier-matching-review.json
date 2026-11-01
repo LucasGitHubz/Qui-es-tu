@@ -1,0 +1,21 @@
+{
+  "questions": 10,
+  "answers": 40,
+  "results": 10,
+  "pathsChecked": 1048576,
+  "minProfileDistance": 3,
+  "tiePercent": 40.6,
+  "resultCounts": {
+    "La loutre des marées": 193970,
+    "La tortue de jade": 159431,
+    "Le cerf des clairières": 98802,
+    "Le chat des ombres": 144972,
+    "Le corbeau d’encre": 105428,
+    "Le dragon de braise": 114915,
+    "Le griffon du vent": 63935,
+    "Le hibou des astres": 51998,
+    "Le loup des aurores": 58549,
+    "Le renard des brumes": 56576
+  },
+  "notes": "Current app matching rule unchanged: one point per matching answer and alphabetical tie-breaking. Food, season and age choices are fictional associations, not psychological measurements."
+}

@@ -1,0 +1,255 @@
+{
+  "id": "familier",
+  "title": "Quel serait ton familier ?",
+  "image": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/renard-des-brumes.jpg",
+  "subtitle": "Dix compagnons magiques attendent leur partenaire. Lequel reconnaîtrait quelque chose de lui en toi ?",
+  "productID": "com.lucasamelin.quiestu.quiz.familier",
+  "questions": [
+    {
+      "number": 1,
+      "question": "Tu marches sur un râteau et le prends en pleine poire, tu :",
+      "answers": {
+        "1": "Fais sauter le Leroy Merlin le plus proche avec de la dynamite.",
+        "2": "Écoutes le son Dynamite de Taio Cruz en imaginant faire sauter le Leroy Merlin le plus proche.",
+        "3": "Remercies la vie pour ce cadeau.",
+        "4": "Es sûr(e) qu’une organisation secrète t’a piégé(e)."
+      }
+    },
+    {
+      "number": 2,
+      "question": "Quel plat préfères-tu ?",
+      "answers": {
+        "1": "Pâtes carbonara.",
+        "2": "Pizza.",
+        "3": "Entrecôte-frites.",
+        "4": "Du tofu (plus il y a de tofu, plus on riz)."
+      }
+    },
+    {
+      "number": 3,
+      "question": "Quelle est ta saison préférée ?",
+      "answers": {
+        "1": "Été",
+        "2": "Automne",
+        "3": "Hiver",
+        "4": "Printemps"
+      }
+    },
+    {
+      "number": 4,
+      "question": "Après plusieurs jours passés avec du monde, hors de chez toi, tu :",
+      "answers": {
+        "1": "Veux te retrouver seul(e), pour recharger ta batterie sociale.",
+        "2": "Organises déjà ta prochaine sortie avec les copains/copines.",
+        "3": "Rattrapes le temps perdu sur ton jeu vidéo favori.",
+        "4": "Fonces aux chiottes car si c’est pas chez toi tu N’IRAS PAS !!"
+      }
+    },
+    {
+      "number": 5,
+      "question": "Tu préfères :",
+      "answers": {
+        "1": "Entraîner ton cardio",
+        "2": "Prendre de la masse musculaire",
+        "3": "Entraîner ton mental",
+        "4": "Entraîner les autres dans des bourbiers"
+      }
+    },
+    {
+      "number": 6,
+      "question": "Face à une situation compliquée, tu :",
+      "answers": {
+        "1": "Gardes ton sang-froid et explores les options disponibles.",
+        "2": "Fuis le problème.",
+        "3": "Agis instinctivement.",
+        "4": "Demandes conseil."
+      }
+    },
+    {
+      "number": 7,
+      "question": "De terribles maux de ventre annoncent l’arrivée d’un raz-de-marée, mais les toilettes du restaurant sont prises, tu :",
+      "answers": {
+        "1": "Te mets à faire un rire démoniaque en jouant avec la lumière pour faire fuir ce mécréant.",
+        "2": "Cries « ALERTE À LA BOMBE » pour poser la tienne tranquille.",
+        "3": "Te crois à Basic-Fit et demandes combien de séries il lui reste.",
+        "4": "Fais dans le lavabo en toute confiance, car, plus c’est gros, plus ça passe."
+      }
+    },
+    {
+      "number": 8,
+      "question": "Tu préfères passer tes vacances :",
+      "answers": {
+        "1": "À la mer",
+        "2": "Au ski",
+        "3": "À la montagne",
+        "4": "Chez toi en mode cocooning"
+      }
+    },
+    {
+      "number": 9,
+      "question": "Si tu pouvais t’arrêter à un âge en particulier, ce serait :",
+      "answers": {
+        "1": "15 ans",
+        "2": "25 ans",
+        "3": "35 ans",
+        "4": "45 ans"
+      }
+    },
+    {
+      "number": 10,
+      "question": "Le distributeur automatique refuse de faire tomber ton paquet de chips, tu :",
+      "answers": {
+        "1": "Es sûr(e) que c’est un coup du gouvernement pour ensuite augmenter le prix de l’essence.",
+        "2": "Lui proposes un battle d’aura et s’il perd, il doit le faire tomber.",
+        "3": "Essaies de comprendre ses revendications et entres dans des négociations.",
+        "4": "Éclates en sanglots car on n’est que lundi et en partant tu lâches un : « J’en veux pas de ton paquet de me*de t’façon ! »"
+      }
+    }
+  ],
+  "matchingResults": {
+    "Le renard des brumes": [
+      2,
+      2,
+      2,
+      2,
+      4,
+      3,
+      1,
+      3,
+      2,
+      2
+    ],
+    "Le dragon de braise": [
+      1,
+      3,
+      1,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "Le hibou des astres": [
+      4,
+      4,
+      2,
+      1,
+      3,
+      1,
+      3,
+      3,
+      4,
+      3
+    ],
+    "Le loup des aurores": [
+      1,
+      3,
+      3,
+      2,
+      1,
+      4,
+      3,
+      3,
+      3,
+      3
+    ],
+    "Le chat des ombres": [
+      4,
+      1,
+      3,
+      1,
+      3,
+      2,
+      1,
+      4,
+      3,
+      4
+    ],
+    "Le cerf des clairières": [
+      3,
+      4,
+      4,
+      1,
+      3,
+      4,
+      3,
+      3,
+      3,
+      3
+    ],
+    "La loutre des marées": [
+      2,
+      2,
+      1,
+      2,
+      4,
+      4,
+      3,
+      1,
+      1,
+      2
+    ],
+    "Le corbeau d’encre": [
+      4,
+      2,
+      2,
+      3,
+      3,
+      1,
+      1,
+      4,
+      2,
+      1
+    ],
+    "La tortue de jade": [
+      3,
+      4,
+      4,
+      4,
+      3,
+      1,
+      3,
+      4,
+      4,
+      3
+    ],
+    "Le griffon du vent": [
+      1,
+      3,
+      1,
+      2,
+      1,
+      1,
+      2,
+      3,
+      2,
+      2
+    ]
+  },
+  "resultDescriptions": {
+    "Le renard des brumes": "Ce renard aux pattes vaporeuses te choisirait pour ta curiosité et ton goût des chemins inattendus. Vous préférez trouver une autre issue plutôt que forcer une porte. Son pouvoir : tracer dans la brume un sentier que vous seuls pouvez voir, pendant quelques minutes. Son petit défaut : cacher tes affaires pour te lancer des énigmes. Ensemble, vous apprendriez qu’une aventure peut aussi commencer sans fuir ce qui vous attend.",
+    "Le dragon de braise": "Pas plus grand qu’un chat, ce dragon garde une chaleur de feu de camp sous ses écailles. Il reconnaîtrait ton envie d’agir et de défendre ce qui compte pour toi. Son pouvoir : réchauffer un objet et lui donner une douce lumière jusqu’au matin. Son petit défaut : éternuer des étincelles quand il s’enthousiasme. Il te pousserait à oser ; à toi de lui apprendre que toute contrariété ne mérite pas de prendre feu.",
+    "Le hibou des astres": "Sous ses plumes constellées, ce hibou cache une patience de chercheur. Il te choisirait pour les questions que tu poses quand les autres pensent avoir déjà tout compris. Son pouvoir : faire apparaître une constellation autour d’un détail que tu n’avais pas remarqué. Son petit défaut : te réveiller au milieu de la nuit pour une découverte. Ensemble, vous auriez parfois besoin de fermer le livre et d’essayer pour de vrai.",
+    "Le loup des aurores": "Sa fourrure s’illumine quand il retrouve quelqu’un de son cercle. Ce loup reconnaîtrait ta loyauté et ta manière de rester présent quand les choses deviennent compliquées. Son pouvoir : déposer un fil de lumière permettant à un compagnon égaré de retrouver votre camp. Son petit défaut : vouloir accompagner absolument toutes tes sorties. Votre lien serait solide, à condition de vous laisser aussi explorer chacun de votre côté.",
+    "Le chat des ombres": "Ce chat silencieux apparaît près de toi sans jamais sembler être arrivé. Il te choisirait pour ton indépendance et ta façon d’accorder ta confiance à ton rythme. Son pouvoir : vous fondre quelques secondes dans une ombre, tant que vous restez immobiles. Son petit défaut : disparaître précisément quand tu veux le présenter. Il respecterait tes silences, mais viendrait te chercher lorsque la solitude cesserait de te faire du bien.",
+    "Le cerf des clairières": "Un petit cerf aux bois couverts de feuilles trouverait auprès de toi une présence attentive. Vous remarquez les êtres fragiles et les endroits où l’on peut enfin respirer. Son pouvoir : faire pousser, le temps d’une halte, un abri de feuillage qui atténue les bruits du dehors. Son petit défaut : s’arrêter pour saluer chaque plante. Il te rappellerait que tu as aussi le droit d’entrer dans le refuge que tu offres aux autres.",
+    "La loutre des marées": "Cette loutre aux moustaches nacrées te choisirait pour ta spontanéité et ton envie de partager les bons moments. Elle transforme facilement un détour en jeu et un inconnu en compagnon de route. Son pouvoir : suspendre de petites bulles d’eau dans les airs pour transporter vos trouvailles. Son petit défaut : embarquer les objets les plus absurdes. Ensemble, vous sauriez alléger une journée, sans oublier que certaines émotions ont besoin d’être écoutées.",
+    "Le corbeau d’encre": "Ce corbeau aux plumes tachées de reflets violets reconnaîtrait ton imagination et ton plaisir de comprendre autrement. Il préférerait ton atelier imparfait à un palais bien rangé. Son pouvoir : donner vie pendant une minute à un petit dessin d’encre, incapable de quitter la page. Son petit défaut : corriger tes croquis sans permission. Il t’aiderait à sortir tes idées de ta tête, puis à accepter qu’une première version puisse rester imparfaite.",
+    "La tortue de jade": "Cette tortue porte sur sa carapace un jardin miniature qui change avec les saisons. Elle te choisirait pour ta constance et ton besoin d’avancer sans te laisser dicter chaque pas. Son pouvoir : conserver dans une feuille un son apaisant que tu peux réécouter une fois. Son petit défaut : faire la sieste au milieu des préparatifs. Elle t’aiderait à trouver ton rythme, tout en te rappelant qu’attendre le moment parfait peut devenir une autre façon de rester sur place.",
+    "Le griffon du vent": "Grand comme un chien, ce griffon aux ailes cuivrées te choisirait pour ton goût des horizons ouverts et des défis qui font grandir. Il aime prendre de la hauteur avant de choisir sa trajectoire. Son pouvoir : appeler une brève bourrasque qui ralentit une chute ou porte un message de papier. Son petit défaut : partir en éclaireur avant la fin des explications. Ensemble, vous apprendriez à préparer vos élans pour pouvoir aller plus loin."
+  },
+  "resultImages": {
+    "Le renard des brumes": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/renard-des-brumes.jpg",
+    "Le dragon de braise": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/dragon-de-braise.jpg",
+    "Le hibou des astres": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/hibou-des-astres.jpg",
+    "Le loup des aurores": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/loup-des-aurores.jpg",
+    "Le chat des ombres": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/chat-des-ombres.jpg",
+    "Le cerf des clairières": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/cerf-des-clairieres.jpg",
+    "La loutre des marées": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/loutre-des-marees.jpg",
+    "Le corbeau d’encre": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/corbeau-dencre.jpg",
+    "La tortue de jade": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/tortue-de-jade.jpg",
+    "Le griffon du vent": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/griffon-du-vent.jpg"
+  }
+}

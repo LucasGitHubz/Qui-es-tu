@@ -21,6 +21,6 @@
 	<key>QuizPrivacyURL</key>
 	<string>https://over-tech-apps.pages.dev/apps/qui-es-tu/privacy/</string>
 	<key>QuizPurchasesEnabled</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
