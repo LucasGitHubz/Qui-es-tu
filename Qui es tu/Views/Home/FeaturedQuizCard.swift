@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FeaturedQuizCard: View {
     let quiz: Quizz
+    var isUnlocked = true
     let action: () -> Void
 
     var body: some View {
@@ -22,9 +23,7 @@ struct FeaturedQuizCard: View {
         Color.clear
             .frame(height: 200)
             .overlay {
-                Image(AppAsset.name(quiz.image))
-                    .resizable()
-                    .scaledToFill()
+                QuizArtwork(source: quiz.image)
             }
             .clipped()
     }
@@ -41,7 +40,7 @@ struct FeaturedQuizCard: View {
     }
 
     private var badge: some View {
-        Text("QUIZ DU JOUR")
+        Text(quiz.releasedAt == nil ? "QUIZ DU JOUR" : "NOUVEAU QUIZ")
             .font(AppTheme.display(size: 11))
             .tracking(1)
             .foregroundStyle(AppTheme.ink)
@@ -68,7 +67,7 @@ struct FeaturedQuizCard: View {
 
             Spacer(minLength: 0)
 
-            Text("C'est parti →")
+            Text(isUnlocked ? "C'est parti →" : "Découvrir →")
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(.white)
                 .padding(.vertical, 10)

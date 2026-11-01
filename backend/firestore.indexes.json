@@ -1,0 +1,10 @@
+{
+  "indexes": [{
+    "collectionGroup": "quizDrafts", "queryScope": "COLLECTION",
+    "fields": [{ "fieldPath": "approved", "order": "ASCENDING" }, { "fieldPath": "releaseAt", "order": "ASCENDING" }]
+  }],
+  "fieldOverrides": [{
+    "collectionGroup": "subscriptionEvents", "fieldPath": "expiresAt",
+    "ttl": true, "indexes": []
+  }]
+}

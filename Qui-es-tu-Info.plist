@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
+	<key>FirebaseCrashlyticsCollectionEnabled</key>
+	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3802123025791172~7657247635</string>
+	<key>GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS</key>
+	<false/>
+	<key>QuizAdsEnabled</key>
+	<false/>
+	<key>QuizBannerAdUnitID</key>
+	<string>ca-app-pub-3802123025791172/4975243978</string>
+	<key>QuizPaidContentURL</key>
+	<string>https://paidquiz-gbecdbsrma-ew.a.run.app</string>
+	<key>QuizPrivacyURL</key>
+	<string>https://over-tech-apps.pages.dev/apps/qui-es-tu/privacy/</string>
+	<key>QuizPurchasesEnabled</key>
+	<false/>
+</dict>
 </plist>

@@ -3,18 +3,36 @@ import SwiftUI
 struct HomeView: View {
     let quizzes: [Quizz]
     let onSelect: (Quizz) -> Void
+    var onPremium: () -> Void = {}
+    var onSettings: () -> Void = {}
+    @Environment(PurchaseStore.self) private var purchases
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                HomeHeader()
+                HStack {
+                    HomeHeader()
+                    Button("Réglages", systemImage: "gearshape", action: onSettings)
+                        .labelStyle(.iconOnly)
+                        .accessibilityIdentifier("home.settings")
+                }
                     .padding(.top, 14)
+
+                Button(action: onPremium) {
+                    Label(purchases.access.isPremium ? "Premium · sans publicité" : "Tous les quiz, sans pub · Premium", systemImage: "sparkles")
+                        .font(.subheadline.bold())
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .padding(.top, 16)
+                .accessibilityIdentifier("home.premium")
 
                 HomeTitleBlock()
                     .padding(.top, 18)
 
                 if let featuredQuiz {
-                    FeaturedQuizCard(quiz: featuredQuiz) {
+                    FeaturedQuizCard(quiz: featuredQuiz, isUnlocked: purchases.access.canOpen(featuredQuiz)) {
                         onSelect(featuredQuiz)
                     }
                     .padding(.top, 18)
@@ -27,7 +45,9 @@ struct HomeView: View {
                     .padding(.top, 22)
                     .padding(.bottom, 12)
 
-                HomeQuizGrid(quizzes: gridQuizzes, onSelect: onSelect)
+                HomeQuizGrid(quizzes: gridQuizzes, access: purchases.access, onSelect: onSelect)
+
+                QuizBanner(placement: "home")
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
@@ -42,6 +62,8 @@ struct HomeView: View {
         guard !quizzes.isEmpty else {
             return nil
         }
+
+        if let latest = quizzes.filter({ $0.releasedAt != nil }).max(by: { ($0.releasedAt ?? .distantPast) < ($1.releasedAt ?? .distantPast) }) { return latest }
 
         let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 0
 
@@ -60,5 +82,6 @@ struct HomeView: View {
 #if DEBUG
 #Preview {
     HomeView(quizzes: Quizz.previewCatalog) { _ in }
+        .environment(PurchaseStore()).environment(AdvertisingStore())
 }
 #endif

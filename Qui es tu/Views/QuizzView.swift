@@ -1,10 +1,3 @@
-//
-//  QuizzView.swift
-//  Qui es tu
-//
-//  Created by Lucas on 20/12/2024.
-//
-
 import SwiftUI
 
 struct QuizzView: View {
@@ -12,150 +5,161 @@ struct QuizzView: View {
     var onFinish: () -> Void = {}
 
     @Environment(QuizzStore.self) private var quizzStore
+    @Environment(ResultHistoryStore.self) private var history
     @Environment(\.dismiss) private var dismiss
+    @State private var showsExitConfirmation = false
+    @AccessibilityFocusState private var isResultFocused: Bool
 
     var body: some View {
-        ZStack {
-            if !quizzStore.isQuizzFinished {
-                VStack {
-                    ProgressView(
-                        value: Double(quizzStore.questionIndex) + 1,
-                        total: Double(max(quizzStore.questionCount, 1))
-                    )
-                        .progressViewStyle(.linear)
-                        .tint(.white)
-                        .padding(.bottom)
-                        .padding(.horizontal, 5)
-                        .accessibilityIdentifier("quiz.progress")
-                    Text(quizzStore.getQuestion().question)
-                        .font(.title3.bold())
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.black)
-                        .padding(20)
-                        .frame(height: 150)
-                        .frame(maxWidth: .infinity)
-                        .background(.white)
-                        .clipShape(.rect(cornerRadius: 10))
-                        .shadow(color: .black.opacity(0.2), radius: 10)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(lineWidth: 4)
-                                .foregroundStyle(
-                                    AppTheme.accentGradient
+        VStack(spacing: 0) {
+            QuizHeader(
+                canGoBack: quizzStore.questionIndex > 0 && !quizzStore.isQuizzFinished,
+                onBack: goBack,
+                onClose: close
+            )
+            .frame(maxWidth: QuizTheme.maxWidth)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+
+            GeometryReader { geometry in
+                ScrollViewReader { scroll in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: QuizTheme.spacing) {
+                            if quizzStore.isLoadingResult {
+                                QuizRevealView()
+                                    .frame(minHeight: max(geometry.size.height - 48, 0))
+                            } else if quizzStore.isQuizzFinished {
+                                if let result = quizzStore.bestMatchResult {
+                                    QuizResultContent(result: result, theme: quizzStore.quizz.displayTitle, image: quizzStore.quizz.resultImages?[result.name])
+                                        .accessibilityFocused($isResultFocused)
+                                    Text("Un quiz pour s’amuser, pas un diagnostic.").font(.footnote).foregroundStyle(.secondary)
+                                    ResultShareButton(result: result, quiz: quizzStore.quizz)
+                                    ReleaseNotificationPrompt()
+                                    QuizBanner(placement: "result")
+                                } else {
+                                    ContentUnavailableView(
+                                        "Résultat indisponible",
+                                        systemImage: "questionmark.circle",
+                                        description: Text("Ce thème n’a pas encore de portrait correspondant. Essaie un autre quiz.")
+                                    )
+                                }
+                            } else if quizzStore.questionCount > 0 {
+                                QuizQuestionContent(
+                                    question: quizzStore.getQuestion(),
+                                    theme: quizzStore.quizz.displayTitle,
+                                    questionIndex: quizzStore.questionIndex,
+                                    questionCount: quizzStore.questionCount,
+                                    selectedAnswer: quizzStore.isCurrentQuestionAnswered
+                                        ? quizzStore.userAnswers[quizzStore.questionIndex] : nil,
+                                    onSelect: quizzStore.selectAnswer
                                 )
-                        }
-                    Spacer()
-                    VStack {
-                        ForEach(quizzStore.getQuestion().answers.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
-                            Button {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-                                    quizzStore.selectAnswer(answerNumber: key)
-                                }
-                            } label: {
-                                HStack {
-                                    Text(value)
-                                        .font(.subheadline.bold())
-                                        .foregroundStyle(quizzStore.isAnswerSelected(key) ? .white : .black)
-                                        .transaction { transaction in
-                                            transaction.animation = nil
-                                        }
-                                    Spacer()
-                                }
-                                .multilineTextAlignment(.leading)
-                                .padding(.horizontal)
-                                .padding(.vertical, 20)
-                                .background(quizzStore.isAnswerSelected(key) ? Color.mint : .white)
-                                .clipShape(RoundedRectangle(cornerRadius: 5))
-                                .scaleEffect(quizzStore.isAnswerSelected(key) ? 1.03 : 1.0)
+                            } else {
+                                ContentUnavailableView(
+                                    "Quiz indisponible",
+                                    systemImage: "questionmark.circle",
+                                    description: Text("Ce thème ne contient pas encore de questions. Reviens aux thèmes pour en choisir un autre.")
+                                )
                             }
-                            .sensoryFeedback(.impact(flexibility: .soft, intensity: 1), trigger: quizzStore.userAnswers)
                         }
+                        .id("quiz.top")
+                        .frame(maxWidth: QuizTheme.maxWidth)
+                        .padding(.horizontal, QuizTheme.pagePadding)
+                        .padding(.bottom, QuizTheme.spacing)
+                        .frame(maxWidth: .infinity, alignment: .top)
                     }
-                    .padding(.bottom, 10)
-                    .padding(.horizontal, 5)
-                    Button {
-                        quizzStore.validateAnswer()
-                    } label: {
-                        Text("Valider")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 60)
-                            .background(Color("Turquoise").opacity(0.7))
-                            .clipShape(.rect(cornerRadius: 5))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .stroke(lineWidth: 3)
-                                    .foregroundStyle(.white)
-                            }
+                    .onChange(of: quizzStore.questionIndex) {
+                        scroll.scrollTo("quiz.top", anchor: .top)
                     }
-                    .accessibilityIdentifier("quiz.validate")
-                }
-                .padding()
-            } else {
-                if quizzStore.isLoadingResult {
-                    ParticleAnimationView()
-                } else {
-                    VStack {
-                        VStack {
-                            Text(quizzStore.bestMatchResult?.name ?? "Lynx")
-                                .font(.title.bold())
-                                .foregroundStyle(.black)
-                                .padding(.bottom)
-                            Image(AppAsset.name(quizzStore.bestMatchResult?.name ?? "Lynx"))
-                                .resizable()
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                                .shadow(color: .black.opacity(0.1), radius: 5)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(lineWidth: 4)
-                                        .foregroundStyle(
-                                            AppTheme.accentGradient
-                                        )
-                                }
-                                .background(.black.opacity(0.1))
-                            Text(quizzStore.bestMatchResult?.description ?? "Description...")
-                                .font(.headline)
-                                .foregroundStyle(.black)
-                                .padding(.vertical)
-                        }
-                        .padding()
-                        .background(.white.opacity(0.8))
-                        .clipShape(.rect(cornerRadius: 10))
-                        Spacer()
-                        Button {
-                            onFinish()
-                            dismiss()
-                        } label: {
-                            Text("Terminer")
-                                .font(.title3.bold())
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 60)
-                                .background(Color("Turquoise").opacity(0.6))
-                                .clipShape(.rect(cornerRadius: 5))
-                        }
+                    .onChange(of: quizzStore.isQuizzFinished) { _, isFinished in
+                        scroll.scrollTo("quiz.top", anchor: .top)
+                        if !isFinished { isResultFocused = false }
                     }
-                    .padding()
+                    .onChange(of: quizzStore.isLoadingResult) { _, isLoading in
+                        scroll.scrollTo("quiz.top", anchor: .top)
+                        isResultFocused = !isLoading && quizzStore.isQuizzFinished
+                    }
                 }
             }
+            .clipped()
+
+            if !quizzStore.isLoadingResult && quizzStore.questionCount > 0 {
+                QuizFooter(
+                    isFinished: quizzStore.isQuizzFinished,
+                    isAnswered: quizzStore.isCurrentQuestionAnswered,
+                    isLastQuestion: quizzStore.questionIndex + 1 == quizzStore.questionCount,
+                    onContinue: quizzStore.validateAnswer,
+                    onRestart: quizzStore.restartQuizz,
+                    onFinish: finish
+                )
+            }
         }
-        .background(AppTheme.screenGradient.ignoresSafeArea())
-        .onDisappear {
-            quizzStore.resetQuizz()
+        .background { QuizBackground() }
+        .foregroundStyle(QuizTheme.ink)
+        .tint(QuizTheme.ink)
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden()
+        .alert("On s’arrête là ?", isPresented: $showsExitConfirmation) {
+            Button("Continuer le quiz", role: .cancel) { }
+            Button("Quitter le quiz", role: .destructive) { dismiss() }
+        } message: {
+            Text("En quittant, tu perdras tes réponses à ce quiz.")
         }
+        .sensoryFeedback(.selection, trigger: quizzStore.userAnswers)
+        .onDisappear { quizzStore.resetQuizz() }
         .task(id: quizzStore.isQuizzFinished) {
             if quizzStore.isQuizzFinished {
                 await quizzStore.revealResult()
+                if !Task.isCancelled, let result = quizzStore.bestMatchResult {
+                    history.save(quiz: quizzStore.quizz, result: result)
+                }
             }
         }
+    }
+
+    private func goBack() {
+        if quizzStore.questionIndex > 0 && !quizzStore.isQuizzFinished {
+            quizzStore.goToPreviousQuestion()
+        } else {
+            close()
+        }
+    }
+
+    private func close() {
+        if quizzStore.isQuizzFinished {
+            finish()
+        } else if quizzStore.userAnswers.isEmpty {
+            dismiss()
+        } else {
+            showsExitConfirmation = true
+        }
+    }
+
+    private func finish() {
+        onFinish()
+        dismiss()
     }
 }
 
 #if DEBUG
-#Preview {
-    QuizzView()
-        .environment(QuizzStore(quizzes: Quizz.previewCatalog))
+#Preview("Clair") {
+    let store = QuizzStore(quizzes: Quizz.previewCatalog)
+    store.setQuizz(id: "animals")
+    return NavigationStack {
+        QuizzView().environment(store)
+            .environment(ResultHistoryStore()).environment(PurchaseStore())
+            .environment(AdvertisingStore()).environment(ReleaseNotificationStore.shared)
+    }
+    .preferredColorScheme(.light)
+}
+
+#Preview("Sombre") {
+    let store = QuizzStore(quizzes: Quizz.previewCatalog)
+    store.setQuizz(id: "animals")
+    return NavigationStack {
+        QuizzView().environment(store)
+            .environment(ResultHistoryStore()).environment(PurchaseStore())
+            .environment(AdvertisingStore()).environment(ReleaseNotificationStore.shared)
+    }
+    .preferredColorScheme(.dark)
 }
 #endif

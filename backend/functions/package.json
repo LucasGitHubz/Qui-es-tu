@@ -1,0 +1,22 @@
+{
+  "name": "qui-es-tu-pilot",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/index.js && node --check src/policy.js"
+  },
+  "dependencies": {
+    "@apple/app-store-server-library": "3.1.0",
+    "firebase-admin": "14.5.0",
+    "firebase-functions": "7.4.0"
+  },
+  "overrides": {
+    "glob": "14.0.2",
+    "minimatch": "11.0.1"
+  }
+}

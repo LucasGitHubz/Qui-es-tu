@@ -1,0 +1,62 @@
+{
+  "identifier": "F78C8D38-082B-4575-A77F-C14482B4F1E1",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "100000001",
+      "localizations": [
+        {
+          "description": "Accès permanent. Les publicités restent affichées.",
+          "displayName": "Ton rôle dans la bande",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "com.lucasamelin.quiestu.quiz.bande",
+      "referenceName": "Quiz Bande",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_applicationInternalID": "6740242586",
+    "_failTransactionsEnabled": false,
+    "_locale": "fr_FR",
+    "_storefront": "FRA",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [
+    {
+      "id": "10000000",
+      "localizations": [],
+      "name": "Premium",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "1.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "100000002",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Tous les quiz, sans publicité.",
+              "displayName": "Premium mensuel",
+              "locale": "fr_FR"
+            }
+          ],
+          "productID": "com.lucasamelin.quiestu.premium.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Premium mensuel",
+          "subscriptionGroupID": "10000000",
+          "type": "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

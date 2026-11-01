@@ -28,31 +28,11 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A000214E2D158D5200AC2F67"
-               BuildableName = "Qui es tuTests.xctest"
-               BlueprintName = "Qui es tuTests"
-               ReferencedContainer = "container:Qui es tu.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A00021582D158D5200AC2F67"
-               BuildableName = "Qui es tuUITests.xctest"
-               BlueprintName = "Qui es tuUITests"
-               ReferencedContainer = "container:Qui es tu.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      shouldAutocreateTestPlan = "NO">
+      <TestPlans>
+         <TestPlanReference reference="container:Pilot.xctestplan" default="YES">
+         </TestPlanReference>
+      </TestPlans>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -74,6 +54,9 @@
             ReferencedContainer = "container:Qui es tu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../Qui es tuTests/Pilot.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

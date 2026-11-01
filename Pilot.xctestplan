@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "id": "92ED4090-2176-40C7-9CA7-A38388CBA116",
+      "name": "Pilot tests",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {
+    "targetForVariableExpansion": {
+      "containerPath": "container:Qui es tu.xcodeproj",
+      "identifier": "A000213E2D158D5100AC2F67",
+      "name": "Qui es tu"
+    }
+  },
+  "testTargets": [
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:Qui es tu.xcodeproj",
+        "identifier": "A000214E2D158D5200AC2F67",
+        "name": "Qui es tuTests"
+      }
+    },
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:Qui es tu.xcodeproj",
+        "identifier": "A00021582D158D5200AC2F67",
+        "name": "Qui es tuUITests"
+      }
+    }
+  ],
+  "version": 1
+}

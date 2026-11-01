@@ -1,0 +1,55 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "quiz-pilot",
+      "runtime": "nodejs22"
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "site": "qui-es-tu-d441b",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/app-ads.txt",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "https://over-tech-apps.pages.dev/apps/qui-es-tu/",
+        "type": 301
+      },
+      {
+        "source": "/index.html",
+        "destination": "https://over-tech-apps.pages.dev/apps/qui-es-tu/",
+        "type": 301
+      },
+      {
+        "source": "/privacy.html",
+        "destination": "https://over-tech-apps.pages.dev/apps/qui-es-tu/privacy/",
+        "type": 301
+      },
+      {
+        "source": "/app-ads.txt",
+        "destination": "https://over-tech-apps.pages.dev/app-ads.txt",
+        "type": 301
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct QuizCard: View {
     let quiz: Quizz
+    var isUnlocked = true
     let action: () -> Void
 
     var body: some View {
@@ -17,7 +18,7 @@ struct QuizCard: View {
 
                     Spacer(minLength: 0)
 
-                    Text("→")
+                    Image(systemName: isUnlocked ? "arrow.right" : "lock.fill")
                         .font(.system(size: 14, weight: .bold))
                         .foregroundStyle(AppTheme.turquoiseAccent)
                 }
@@ -29,7 +30,7 @@ struct QuizCard: View {
             .shadow(color: AppTheme.ink.opacity(0.08), radius: 7, y: 4)
         }
         .buttonStyle(PressableCardStyle())
-        .accessibilityLabel(quiz.title)
+        .accessibilityLabel(isUnlocked ? quiz.title : "\(quiz.title), quiz payant")
         .accessibilityIdentifier("home.quiz.\(quiz.id)")
     }
 
@@ -37,9 +38,7 @@ struct QuizCard: View {
         Color.clear
             .frame(height: 96)
             .overlay {
-                Image(AppAsset.name(quiz.image))
-                    .resizable()
-                    .scaledToFill()
+                QuizArtwork(source: quiz.image)
             }
             .clipped()
     }

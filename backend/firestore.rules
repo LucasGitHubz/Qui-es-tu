@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Existing free catalogue remains compatible with older versions.
+    match /quizzes/{quiz} { allow read: if true; allow write: if false; }
+    // Contains titles, artwork and product identifiers only, never paid questions/results.
+    match /quizReleases/{quiz} { allow read: if true; allow write: if false; }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

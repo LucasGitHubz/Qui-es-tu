@@ -25,13 +25,16 @@ final class QuizzStore {
     var showAlert = false
 
     private let firestoreService: any QuizzService
+    private let telemetry: any AppTelemetry
 
     init(
         firestoreService: any QuizzService = FirestoreService(),
-        quizzes: [Quizz] = []
+        quizzes: [Quizz] = [],
+        telemetry: (any AppTelemetry)? = nil
     ) {
         self.firestoreService = firestoreService
         self.quizzList = quizzes
+        self.telemetry = telemetry ?? NoOpTelemetry()
     }
 
     var questionCount: Int {
@@ -65,6 +68,7 @@ final class QuizzStore {
         } catch is CancellationError {
             return
         } catch {
+            telemetry.recordQuizLoadingFailure(error)
             errorMessage = error.localizedDescription
             showAlert = true
         }
@@ -72,6 +76,18 @@ final class QuizzStore {
 
     func setQuizz(id: String) {
         quizz = quizzList.first(where: { $0.id == id }) ?? .empty
+        trackStart()
+    }
+
+    func setDownloadedQuiz(_ quiz: Quizz) {
+        quizz = quiz
+        trackStart()
+    }
+
+    private func trackStart() {
+        if questionCount > 0 {
+            telemetry.track(.started(quizID: quizz.id, questionCount: questionCount))
+        }
     }
 
     func getQuestion() -> Quizz.Question {
@@ -84,6 +100,8 @@ final class QuizzStore {
     }
 
     func selectAnswer(answerNumber: Int) {
+        guard !isQuizzFinished, getQuestion().answers[answerNumber] != nil else { return }
+
         if userAnswers.count > questionIndex {
             userAnswers[questionIndex] = answerNumber
         } else {
@@ -99,7 +117,7 @@ final class QuizzStore {
     }
 
     func validateAnswer() {
-        guard isCurrentQuestionAnswered, questionCount > 0 else {
+        guard !isQuizzFinished, isCurrentQuestionAnswered, questionCount > 0 else {
             return
         }
 
@@ -107,9 +125,21 @@ final class QuizzStore {
             calculateBestMatch()
             isLoadingResult = true
             isQuizzFinished = true
+            telemetry.track(.completed(quizID: quizz.id, questionCount: questionCount))
         } else {
             questionIndex += 1
         }
+    }
+
+    func goToPreviousQuestion() {
+        guard questionIndex > 0, !isQuizzFinished else { return }
+        questionIndex -= 1
+    }
+
+    func restartQuizz() {
+        let previous = quizz
+        resetQuizz()
+        setDownloadedQuiz(previous)
     }
 
     func revealResult() async {
@@ -118,7 +148,7 @@ final class QuizzStore {
         }
 
         do {
-            try await Task.sleep(for: .seconds(3))
+            try await Task.sleep(for: .milliseconds(1200))
             try Task.checkCancellation()
             isLoadingResult = false
         } catch {
@@ -141,6 +171,9 @@ final class QuizzStore {
     }
 
     func resetQuizz() {
+        if questionCount > 0 && !isQuizzFinished {
+            telemetry.track(.exited(quizID: quizz.id, answeredCount: userAnswers.count))
+        }
         quizz = .empty
         questionIndex = 0
         userAnswers = []

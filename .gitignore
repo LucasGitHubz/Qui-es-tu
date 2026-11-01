@@ -45,3 +45,17 @@ DerivedData/
 # Xcode .plist configuration for development teams
 *.xcconfig
 
+
+# Pilot backend dependencies and local secrets
+backend/functions/node_modules/
+backend/functions/.env*
+backend/functions/.secret.local
+backend/*debug.log
+*.p8
+
+# Unreviewed quiz content stays local until explicitly approved for Git.
+/content/pilot/
+
+# Generated deployment cache and local security-audit backups.
+/backend/.firebase/
+/backend/backups/
