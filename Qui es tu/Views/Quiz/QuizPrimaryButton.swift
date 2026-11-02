@@ -24,7 +24,7 @@ struct QuizPrimaryButton: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .frame(maxWidth: .infinity, minHeight: 54)
-            .background(isEnabled ? QuizTheme.coral : QuizTheme.border, in: .capsule)
+            .background(isEnabled ? QuizTheme.accent : QuizTheme.border, in: .capsule)
             .contentShape(.capsule)
         }
         .buttonStyle(.plain)

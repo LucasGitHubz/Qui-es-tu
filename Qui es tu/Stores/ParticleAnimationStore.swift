@@ -16,6 +16,7 @@ class ParticleAnimationStore: ObservableObject {
     let maxParticles = 200
     let circleRadius: CGFloat = UIScreen.main.bounds.width / 4 // Radius of the circular flow
     var circleTimer: Timer?
+    private var dotsTimer: Timer?
     
     init() {
         particles = (0..<maxParticles).map { index in
@@ -31,8 +32,8 @@ class ParticleAnimationStore: ObservableObject {
     
     func startMotion() {
         circleTimer?.invalidate()
-        circleTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { _ in
-            self.updateParticlePositions()
+        circleTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] _ in
+            self?.updateParticlePositions()
         }
 
         withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
@@ -55,7 +56,9 @@ class ParticleAnimationStore: ObservableObject {
     }
 
     func startDotsAnimation() {
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+        dotsTimer?.invalidate()
+        dotsTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+                guard let self else { return }
                 if self.dots.count < 3 {
                     self.dots += "."
                 } else {
@@ -64,8 +67,16 @@ class ParticleAnimationStore: ObservableObject {
         }
     }
 
+    func stopAnimations() {
+        circleTimer?.invalidate()
+        circleTimer = nil
+        dotsTimer?.invalidate()
+        dotsTimer = nil
+    }
+
     deinit {
         circleTimer?.invalidate()
+        dotsTimer?.invalidate()
     }
 }
 

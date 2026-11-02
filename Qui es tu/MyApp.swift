@@ -54,9 +54,16 @@ struct MyApp: App {
     init() {
 #if DEBUG
         let usesPreviewCatalog = ProcessInfo.processInfo.arguments.contains("-uiTesting")
+        var previewCatalog = Quizz.previewCatalog
+        if usesPreviewCatalog && ProcessInfo.processInfo.arguments.contains("-uiTestingPaidCatalog") {
+            previewCatalog[3].productID = "com.lucasamelin.quiestu.quiz.creatures"
+            previewCatalog[3].releasedAt = .now
+            previewCatalog[5].productID = "com.lucasamelin.quiestu.quiz.weapons"
+            previewCatalog[5].releasedAt = .now.addingTimeInterval(-7 * 24 * 60 * 60)
+        }
         _quizzStore = State(
             initialValue: QuizzStore(
-                quizzes: usesPreviewCatalog ? Quizz.previewCatalog : [],
+                quizzes: usesPreviewCatalog ? previewCatalog : [],
                 telemetry: usesPreviewCatalog ? NoOpTelemetry() : FirebaseTelemetry()
             )
         )

@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "build": "8",
+  "build": "9",
   "appStoreProductID": "com.lucasamelin.quiestu.quiz.familier",
   "appStoreProductAppleID": "6829542041",
   "priceBaseCountry": "France",
@@ -9,7 +9,7 @@
   "privateDraftDocument": "quizDrafts/familier",
   "artworkBaseURL": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/",
   "publicReleaseStatus": "catalogue-and-paid-content-available-for-testflight",
-  "archiveStatus": "uploaded-to-app-store-connect",
+  "archiveStatus": "build-9-uploaded-to-app-store-connect",
   "purchasesEnabledInCandidate": true,
   "adsEnabled": false,
   "onePieceStatus": "private-unapproved-draft",
@@ -25,10 +25,10 @@
   "releaseAnnouncementEnabled": false,
   "appStoreProductTerritories": "all-175",
   "appStoreVersionStatus": "Prepare for Submission",
-  "appStoreBuildProcessingStatus": "processed; associated with version 1.2.0; Missing Compliance",
-  "appStoreBuildURL": "https://appstoreconnect.apple.com/apps/6740242586/testflight/ios/eb846813-532e-4476-9595-df43568dca55/metadata",
+  "appStoreBuildProcessingStatus": "build 9 upload accepted by Apple; processing/status not checked in web UI while Mac locked. App Store version still has build 8 selected.",
   "appStoreProductStatus": "Prepare for Submission",
   "remainingBeforePublicLaunch": [
+    "Select build 9 instead of build 8 on the App Store version once uploaded and finish the interactive UI checks after unlocking the Mac.",
     "Determine and complete the build encryption/export-compliance declaration, taking the bundled Firebase/gRPC crypto dependencies into account.",
     "Attach an accurate in-app-purchase review screenshot and submit the first non-consumable and Premium with the app version.",
     "Validate actual sandbox purchase, private quiz download, restoration and expiry on device.",
@@ -38,5 +38,14 @@
   ],
   "canonicalPrivacyURL": "https://over-tech-apps.pages.dev/apps/qui-es-tu/privacy/",
   "canonicalSupportURL": "https://over-tech-apps.pages.dev/apps/qui-es-tu/support/",
-  "appStorePrivacyURLStatus": "saved-for-next-app-version"
+  "appStorePrivacyURLStatus": "saved-for-next-app-version",
+  "previousUploadedBuild": "8",
+  "appStoreVersionSelectedBuild": "8",
+  "previousAppStoreBuildURL": "https://appstoreconnect.apple.com/apps/6740242586/testflight/ios/eb846813-532e-4476-9595-df43568dca55/metadata",
+  "uiRefinements": {
+    "paidBadges": "Discreet PAYANT badge on featured and grid paid quizzes, determined by productID even after unlock. Decorative badge text is capped at xxxLarge; paid status is also included in the VoiceOver button label.",
+    "quizSelection": "Mint selected answers, progress and primary quiz buttons; adaptive mint selected backgrounds in light and dark.",
+    "resultReveal": "Original 200 white particles, pulsing orbit, dotted Analyse en cours label and original gradient, fullscreen for the original three seconds. Timer references cleaned up when the loader disappears.",
+    "verification": "App build and test build succeeded. Featured paid badge visually checked at default and maximum accessibility text sizes. Runtime UI tests could not execute because installed CoreSimulator 1174.9.2 is older than the Xcode-required 1174.21.0. Interactive selection/loader/grid checks require unlocking the Mac."
+  }
 }

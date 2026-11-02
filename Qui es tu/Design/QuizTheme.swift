@@ -12,9 +12,9 @@ enum QuizTheme {
     static let selection = Color("QuizSelection")
     static let topWash = Color("QuizTopWash")
     static let bottomWash = Color("QuizBottomWash")
-    static let coral = AppTheme.coralCTA
+    static let accent = Color.mint
     static let questionInk = Color(red: 16 / 255, green: 44 / 255, blue: 65 / 255)
-    static let actionInk = Color(red: 49 / 255, green: 18 / 255, blue: 18 / 255)
+    static let actionInk = Color(red: 9 / 255, green: 54 / 255, blue: 47 / 255)
 
     static let pagePadding: CGFloat = 22
     static let spacing: CGFloat = 24

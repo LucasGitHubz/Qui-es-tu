@@ -30,7 +30,7 @@ struct QuizCard: View {
             .shadow(color: AppTheme.ink.opacity(0.08), radius: 7, y: 4)
         }
         .buttonStyle(PressableCardStyle())
-        .accessibilityLabel(isUnlocked ? quiz.title : "\(quiz.title), quiz payant")
+        .accessibilityLabel(quiz.productID == nil ? quiz.title : "\(quiz.title), quiz payant")
         .accessibilityIdentifier("home.quiz.\(quiz.id)")
     }
 
@@ -41,6 +41,12 @@ struct QuizCard: View {
                 QuizArtwork(source: quiz.image)
             }
             .clipped()
+            .overlay(alignment: .topTrailing) {
+                if quiz.productID != nil {
+                    PaidQuizBadge()
+                        .padding(8)
+                }
+            }
     }
 }
 

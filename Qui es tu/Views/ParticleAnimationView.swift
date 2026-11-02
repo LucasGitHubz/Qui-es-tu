@@ -39,6 +39,9 @@ struct ParticleAnimationView: View {
         .onAppear {
             particleAnimationStore.startMotion()
         }
+        .onDisappear {
+            particleAnimationStore.stopAnimations()
+        }
         .padding()
         .frame(maxWidth: .infinity)
         .background(AppTheme.screenGradient.ignoresSafeArea())

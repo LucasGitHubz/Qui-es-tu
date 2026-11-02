@@ -11,86 +11,86 @@ struct QuizzView: View {
     @AccessibilityFocusState private var isResultFocused: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
-            QuizHeader(
-                canGoBack: quizzStore.questionIndex > 0 && !quizzStore.isQuizzFinished,
-                onBack: goBack,
-                onClose: close
-            )
-            .frame(maxWidth: QuizTheme.maxWidth)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 16)
+        ZStack {
+            if quizzStore.isLoadingResult {
+                ParticleAnimationView()
+                    .accessibilityIdentifier("quiz.reveal")
+            } else {
+                VStack(spacing: 0) {
+                    QuizHeader(
+                        canGoBack: quizzStore.questionIndex > 0 && !quizzStore.isQuizzFinished,
+                        onBack: goBack,
+                        onClose: close
+                    )
+                    .frame(maxWidth: QuizTheme.maxWidth)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
 
-            GeometryReader { geometry in
-                ScrollViewReader { scroll in
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: QuizTheme.spacing) {
-                            if quizzStore.isLoadingResult {
-                                QuizRevealView()
-                                    .frame(minHeight: max(geometry.size.height - 48, 0))
-                            } else if quizzStore.isQuizzFinished {
-                                if let result = quizzStore.bestMatchResult {
-                                    QuizResultContent(result: result, theme: quizzStore.quizz.displayTitle, image: quizzStore.quizz.resultImages?[result.name])
-                                        .accessibilityFocused($isResultFocused)
-                                    Text("Un quiz pour s’amuser, pas un diagnostic.").font(.footnote).foregroundStyle(.secondary)
-                                    ResultShareButton(result: result, quiz: quizzStore.quizz)
-                                    ReleaseNotificationPrompt()
-                                    QuizBanner(placement: "result")
-                                } else {
-                                    ContentUnavailableView(
-                                        "Résultat indisponible",
-                                        systemImage: "questionmark.circle",
-                                        description: Text("Ce thème n’a pas encore de portrait correspondant. Essaie un autre quiz.")
-                                    )
+                    GeometryReader { _ in
+                        ScrollViewReader { scroll in
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: QuizTheme.spacing) {
+                                    if quizzStore.isQuizzFinished {
+                                        if let result = quizzStore.bestMatchResult {
+                                            QuizResultContent(result: result, theme: quizzStore.quizz.displayTitle, image: quizzStore.quizz.resultImages?[result.name])
+                                                .accessibilityFocused($isResultFocused)
+                                            Text("Un quiz pour s’amuser, pas un diagnostic.").font(.footnote).foregroundStyle(.secondary)
+                                            ResultShareButton(result: result, quiz: quizzStore.quizz)
+                                            ReleaseNotificationPrompt()
+                                            QuizBanner(placement: "result")
+                                        } else {
+                                            ContentUnavailableView(
+                                                "Résultat indisponible",
+                                                systemImage: "questionmark.circle",
+                                                description: Text("Ce thème n’a pas encore de portrait correspondant. Essaie un autre quiz.")
+                                            )
+                                        }
+                                    } else if quizzStore.questionCount > 0 {
+                                        QuizQuestionContent(
+                                            question: quizzStore.getQuestion(),
+                                            theme: quizzStore.quizz.displayTitle,
+                                            questionIndex: quizzStore.questionIndex,
+                                            questionCount: quizzStore.questionCount,
+                                            selectedAnswer: quizzStore.isCurrentQuestionAnswered
+                                                ? quizzStore.userAnswers[quizzStore.questionIndex] : nil,
+                                            onSelect: quizzStore.selectAnswer
+                                        )
+                                    } else {
+                                        ContentUnavailableView(
+                                            "Quiz indisponible",
+                                            systemImage: "questionmark.circle",
+                                            description: Text("Ce thème ne contient pas encore de questions. Reviens aux thèmes pour en choisir un autre.")
+                                        )
+                                    }
                                 }
-                            } else if quizzStore.questionCount > 0 {
-                                QuizQuestionContent(
-                                    question: quizzStore.getQuestion(),
-                                    theme: quizzStore.quizz.displayTitle,
-                                    questionIndex: quizzStore.questionIndex,
-                                    questionCount: quizzStore.questionCount,
-                                    selectedAnswer: quizzStore.isCurrentQuestionAnswered
-                                        ? quizzStore.userAnswers[quizzStore.questionIndex] : nil,
-                                    onSelect: quizzStore.selectAnswer
-                                )
-                            } else {
-                                ContentUnavailableView(
-                                    "Quiz indisponible",
-                                    systemImage: "questionmark.circle",
-                                    description: Text("Ce thème ne contient pas encore de questions. Reviens aux thèmes pour en choisir un autre.")
-                                )
+                                .id("quiz.top")
+                                .frame(maxWidth: QuizTheme.maxWidth)
+                                .padding(.horizontal, QuizTheme.pagePadding)
+                                .padding(.bottom, QuizTheme.spacing)
+                                .frame(maxWidth: .infinity, alignment: .top)
+                            }
+                            .onChange(of: quizzStore.questionIndex) {
+                                scroll.scrollTo("quiz.top", anchor: .top)
+                            }
+                            .onChange(of: quizzStore.isQuizzFinished) { _, isFinished in
+                                scroll.scrollTo("quiz.top", anchor: .top)
+                                if !isFinished { isResultFocused = false }
                             }
                         }
-                        .id("quiz.top")
-                        .frame(maxWidth: QuizTheme.maxWidth)
-                        .padding(.horizontal, QuizTheme.pagePadding)
-                        .padding(.bottom, QuizTheme.spacing)
-                        .frame(maxWidth: .infinity, alignment: .top)
                     }
-                    .onChange(of: quizzStore.questionIndex) {
-                        scroll.scrollTo("quiz.top", anchor: .top)
-                    }
-                    .onChange(of: quizzStore.isQuizzFinished) { _, isFinished in
-                        scroll.scrollTo("quiz.top", anchor: .top)
-                        if !isFinished { isResultFocused = false }
-                    }
-                    .onChange(of: quizzStore.isLoadingResult) { _, isLoading in
-                        scroll.scrollTo("quiz.top", anchor: .top)
-                        isResultFocused = !isLoading && quizzStore.isQuizzFinished
+                    .clipped()
+
+                    if quizzStore.questionCount > 0 {
+                        QuizFooter(
+                            isFinished: quizzStore.isQuizzFinished,
+                            isAnswered: quizzStore.isCurrentQuestionAnswered,
+                            isLastQuestion: quizzStore.questionIndex + 1 == quizzStore.questionCount,
+                            onContinue: quizzStore.validateAnswer,
+                            onRestart: quizzStore.restartQuizz,
+                            onFinish: finish
+                        )
                     }
                 }
-            }
-            .clipped()
-
-            if !quizzStore.isLoadingResult && quizzStore.questionCount > 0 {
-                QuizFooter(
-                    isFinished: quizzStore.isQuizzFinished,
-                    isAnswered: quizzStore.isCurrentQuestionAnswered,
-                    isLastQuestion: quizzStore.questionIndex + 1 == quizzStore.questionCount,
-                    onContinue: quizzStore.validateAnswer,
-                    onRestart: quizzStore.restartQuizz,
-                    onFinish: finish
-                )
             }
         }
         .background { QuizBackground() }
@@ -103,6 +103,9 @@ struct QuizzView: View {
             Button("Quitter le quiz", role: .destructive) { dismiss() }
         } message: {
             Text("En quittant, tu perdras tes réponses à ce quiz.")
+        }
+        .onChange(of: quizzStore.isLoadingResult) { _, isLoading in
+            isResultFocused = !isLoading && quizzStore.isQuizzFinished
         }
         .sensoryFeedback(.selection, trigger: quizzStore.userAnswers)
         .onDisappear { quizzStore.resetQuizz() }

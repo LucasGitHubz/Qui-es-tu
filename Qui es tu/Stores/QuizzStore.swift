@@ -148,7 +148,7 @@ final class QuizzStore {
         }
 
         do {
-            try await Task.sleep(for: .milliseconds(1200))
+            try await Task.sleep(for: .seconds(3))
             try Task.checkCancellation()
             isLoadingResult = false
         } catch {

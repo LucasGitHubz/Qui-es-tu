@@ -9,7 +9,7 @@ struct QuizProgressStyle: ProgressViewStyle {
                 Capsule()
                     .fill(
                         Double(index) < (configuration.fractionCompleted ?? 0) * Double(questionCount)
-                            ? QuizTheme.coral : QuizTheme.border
+                            ? QuizTheme.accent : QuizTheme.border
                     )
             }
         }

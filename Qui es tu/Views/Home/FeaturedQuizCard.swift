@@ -10,12 +10,18 @@ struct FeaturedQuizCard: View {
             cover
                 .overlay { scrim }
                 .overlay(alignment: .topLeading) { badge }
+                .overlay(alignment: .topTrailing) {
+                    if quiz.productID != nil {
+                        PaidQuizBadge()
+                            .padding(14)
+                    }
+                }
                 .overlay(alignment: .bottom) { bottomRow }
                 .clipShape(.rect(cornerRadius: 24))
                 .shadow(color: AppTheme.coralShadow.opacity(0.25), radius: 14, y: 12)
         }
         .buttonStyle(PressableCardStyle())
-        .accessibilityLabel("Quiz du jour, \(quiz.title)")
+        .accessibilityLabel(quiz.productID == nil ? "Quiz du jour, \(quiz.title)" : "Nouveau quiz, \(quiz.title), quiz payant")
         .accessibilityIdentifier("home.quiz.\(quiz.id)")
     }
 

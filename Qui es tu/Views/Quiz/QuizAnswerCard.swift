@@ -11,7 +11,7 @@ struct QuizAnswerCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? QuizTheme.coral : QuizTheme.background)
+                        .fill(isSelected ? QuizTheme.accent : QuizTheme.background)
                     if isSelected {
                         Image(systemName: "checkmark")
                             .font(.caption.bold())
@@ -38,7 +38,7 @@ struct QuizAnswerCard: View {
             )
             .overlay {
                 RoundedRectangle(cornerRadius: QuizTheme.answerRadius)
-                    .strokeBorder(isSelected ? QuizTheme.coral : QuizTheme.border, lineWidth: 1.5)
+                    .strokeBorder(isSelected ? QuizTheme.accent : QuizTheme.border, lineWidth: 1.5)
             }
             .contentShape(.rect(cornerRadius: QuizTheme.answerRadius))
         }
