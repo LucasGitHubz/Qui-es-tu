@@ -8,6 +8,9 @@ final class QuizPresentationUITests: XCTestCase {
     @MainActor
     func testPaidFeaturedAndGridCardsRemainDistinctFromFreeQuizzes() {
         let app = launchApp(paidCatalog: true)
+        XCTAssertEqual(app.buttons["home.premium"].label, "Premium")
+        XCTAssertTrue(app.buttons["home.settings"].isHittable)
+        XCTAssertFalse(app.staticTexts["QUI ES-TU ?"].exists)
         let featured = app.buttons["home.quiz.creatures"]
         XCTAssertTrue(featured.waitForExistence(timeout: 5))
         XCTAssertTrue(featured.label.contains("quiz payant"))
@@ -21,8 +24,8 @@ final class QuizPresentationUITests: XCTestCase {
         XCTAssertTrue(paid.label.contains("quiz payant"))
         capture("Grid paid badge and free cards")
         paid.tap()
-        XCTAssertTrue(app.staticTexts["Passe à Premium"].waitForExistence(timeout: 5))
-        app.buttons["Fermer"].tap()
+        XCTAssertTrue(app.staticTexts["paywall.title"].waitForExistence(timeout: 5))
+        app.buttons["paywall.close"].tap()
         scrollTo(free, in: app, upwards: false)
         free.tap()
         XCTAssertTrue(app.buttons["quiz.validate"].waitForExistence(timeout: 5))
@@ -35,6 +38,9 @@ final class QuizPresentationUITests: XCTestCase {
         let next = app.buttons["quiz.validate"]
         XCTAssertTrue(next.waitForExistence(timeout: 5))
         XCTAssertFalse(next.isEnabled)
+        XCTAssertFalse(app.staticTexts["À TON INSTINCT"].exists)
+        XCTAssertFalse(app.staticTexts["Pas de bonne réponse. Juste la tienne."].exists)
+        XCTAssertFalse(app.staticTexts["Choisis la réponse qui te ressemble."].exists)
 
         for question in 0..<10 {
             let answer = app.buttons["quiz.answer.1"]
@@ -55,11 +61,68 @@ final class QuizPresentationUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["quiz.result"].waitForExistence(timeout: 8))
         XCTAssertEqual(app.staticTexts["quiz.result"].label, "Lynx")
-        XCTAssertTrue(app.buttons["quiz.restart"].isHittable)
+        XCTAssertFalse(app.staticTexts["TON PORTRAIT SE DÉVOILE"].exists)
+        XCTAssertFalse(app.staticTexts["Un portrait qui te ressemble."].exists)
+        capture("Result full subject and continuous background")
+        let actionY = app.buttons["quiz.restart"].frame.minY
+        app.swipeUp()
+        XCTAssertTrue(app.buttons["quiz.share"].isHittable)
+        XCTAssertTrue(app.buttons["quiz.finish"].isHittable)
+        XCTAssertEqual(app.buttons["quiz.restart"].frame.minY, actionY, accuracy: 1)
+        capture("Result scrolled with fixed bottom actions")
+        app.swipeDown()
+        let top = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+        let pulled = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.65))
+        top.press(forDuration: 0.1, thenDragTo: pulled, withVelocity: .slow, thenHoldForDuration: 2)
+        capture("Result after pulling the header")
+        scrollTo(app.buttons["quiz.restart"], in: app)
+        XCTAssertEqual(app.buttons["quiz.restart"].label, "Rejouer")
+        XCTAssertEqual(app.buttons["quiz.finish"].label, "Autres quiz")
+        XCTAssertFalse(app.staticTexts["Un quiz pour s’amuser, pas un diagnostic."].exists)
         capture("Result after particle reveal")
         app.buttons["quiz.restart"].tap()
         XCTAssertFalse(next.isEnabled)
         XCTAssertFalse(app.buttons["quiz.answer.1"].isSelected)
+    }
+
+    @MainActor
+    func testRemoteResultArtworkIsReadyWhenThePortraitAppears() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingRemoteResult"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
+        app.buttons["home.quiz.animals"].tap()
+        for _ in 0..<10 {
+            let answer = app.buttons["quiz.answer.1"]
+            scrollTo(answer, in: app)
+            answer.tap()
+            app.buttons["quiz.validate"].tap()
+        }
+        XCTAssertTrue(app.staticTexts["quiz.result"].waitForExistence(timeout: 18))
+        XCTAssertTrue(app.images["quiz.result.artwork"].exists)
+        capture("First remote result with ready artwork and seamless action area")
+    }
+
+    @MainActor
+    func testOwnedQuizStaysUnlockedAcrossForegroundAndReopensFromCache() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingOwnedCatalog"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
+        let card = app.buttons["home.quiz.creatures"]
+        XCTAssertTrue(card.staticTexts["C'est parti →"].exists)
+        XCUIDevice.shared.press(.home)
+        app.activate()
+        XCTAssertTrue(card.staticTexts["C'est parti →"].exists)
+        XCTAssertFalse(card.staticTexts["Découvrir →"].exists)
+        capture("Owned quiz after foreground entitlement refresh")
+        for _ in 0..<2 {
+            card.tap()
+            XCTAssertTrue(app.buttons["quiz.validate"].waitForExistence(timeout: 3))
+            XCTAssertFalse(app.staticTexts["Chargement du quiz…"].exists)
+            app.buttons["quiz.close"].tap()
+            XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 3))
+        }
     }
 
     @MainActor
@@ -69,6 +132,7 @@ final class QuizPresentationUITests: XCTestCase {
         if paidCatalog { app.launchArguments.append("-uiTestingPaidCatalog") }
         app.launch()
         XCTAssertTrue(app.staticTexts["home.title"].waitForExistence(timeout: 5))
+        capture("Home with preloaded artwork")
         return app
     }
 

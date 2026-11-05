@@ -2,7 +2,24 @@
 
 The app implements the agreed free / €0.99 permanent quiz / €1.99 monthly Premium offers. Individual ownership keeps banners. Premium unlocks all released paid quizzes and removes banners. A cancelled subscription stays usable until its entitlement ends; individual purchases survive expiry. Prices shown in the app come exclusively from StoreKit.
 
-Purchases and production ads are OFF in `Qui-es-tu-Info.plist` until the external setup below is complete. Firebase Hosting and restricted Firestore rules are deployed. Four private drafts are uploaded, and all four Cloud Functions are deployed and ACTIVE. The weekly scheduler is enabled, but no draft is approved or scheduled. No release notification has been sent. Existing uncommitted quiz/analytics work has been preserved.
+The 1.2.0 build 10 configuration enables purchases and keeps production ads OFF in `Qui-es-tu-Info.plist`. Debug runs use Google test ads and provide a fake paid-quiz preview; both development controls are excluded from the archive. Firebase Hosting, restricted Firestore rules, and the four Cloud Functions are deployed. The weekly scheduler is enabled, but the private drafts are not approved or scheduled. The dated sections below record setup and remaining production checks.
+
+### Build 10 release checks — 5 November 2026
+
+- Signed iOS archive created; bundle/version/build verified as
+  `com.lucasamelin.Qui-es-tu`, `1.2.0`, `10`. All 68 compiled bitmap assets pass
+  validation at 1x/2x/3x; obsolete composite paywall artwork is no longer bundled.
+- Initial full test run: 63 of 67 passed. The remaining UI test was corrected to
+  scroll the notification prompt above the fixed footer and passed on rerun.
+  StoreKit checks were rerun on iOS 27.1 because the installed iOS 26.5 CLI test
+  service rejected test-session mutations.
+- Final Release test pass covers bundled assets, image preparation, result-history
+  deletion, purchase restoration/refunds, subscription expiry, and French/English
+  monthly and individual prices. Test fixtures are independent of Debug previews.
+- `ITSAppUsesNonExemptEncryption=false`: the app's cryptography is limited to
+  secure service connections, platform-protected storage and cache-key hashes;
+  it does not implement a separate encryption product. See Apple's
+  [export-compliance guidance](https://developer.apple.com/help/app-store-connect/manage-app-information/overview-of-export-compliance/).
 
 ## 1. Apple purchases
 
@@ -21,7 +38,7 @@ Use the same pattern for future releases: `com.lucasamelin.quiestu.quiz.<quiz-id
 
 The app only grants access from verified StoreKit current entitlements, including billing grace. Restore purchases is available in the paywall and settings. The signed transaction is sent over HTTPS to the content service; that service checks Apple again for revocations and current subscription status. No separate user account or stored answer profile is required.
 
-`Qui es tuTests/Pilot.storekit` provides local test products and is selected in the shared scheme's Debug Run action. The `Pilot` test plan runs tests serially because StoreKit's test environment is shared. For real sandbox testing from Xcode, set Run → Options → StoreKit Configuration to None; the local configuration does not apply to archived App Store builds. Local StoreKit transactions are intentionally rejected by the production server; use sandbox/TestFlight purchases for the complete paid download test.
+`Qui es tuTests/Pilot.storekit` provides local test products, loaded explicitly by the automated StoreKit tests. The shared scheme's Debug Run action leaves StoreKit Configuration set to None so device runs can use Apple's sandbox for the complete paid download flow. The `Pilot` test plan runs tests serially because StoreKit's test environment is shared. For local purchase-only testing, temporarily select `Pilot.storekit` in Run → Options → StoreKit Configuration; reset it to None before testing paid downloads. Local StoreKit transactions are intentionally rejected by the production server; use sandbox/TestFlight purchases for the complete paid download test. The local configuration does not apply to archived App Store builds.
 
 ## 2. Firebase backend and weekly publication
 
@@ -157,3 +174,174 @@ Real ad delivery/consent, APNs device delivery and App Store restoration remain 
 At the owner’s request, all public Qui es-tu pages use the existing Over Tech Apps website, with **overtechapps@gmail.com** as support/privacy contact. The privacy source is maintained in the `over-tech-apps` repository. Firebase Hosting now only redirects old public URLs to the corresponding Over Tech Apps pages; Firebase purchase-validation, notification services and private draft storage remain unchanged. The app configuration and fallback contact use the same canonical website/email. The developer-site root already has the matching AdMob `app-ads.txt` entry.
 
 Verified after migration: Over Tech Apps app, support and privacy pages return HTTP 200 with `overtechapps@gmail.com`; old Firebase home/privacy/app-ads URLs return HTTP 301 to Over Tech Apps. The AdMob draft privacy URL was saved as the canonical Over Tech Apps URL. App Store Connect still displays the older Facebook privacy URL and explicitly locks editing until a new app version is created. Set the canonical privacy URL, support URL and marketing URL in that next-version draft before submission. No App Store version was created or submitted during this website correction.
+
+
+## Debug commerce preview — 5 November 2026
+
+A normal Debug build now shows **Quiz payant de démonstration** near the top of
+home. It opens the existing paywall with a fictional **Ton pouvoir secret** quiz,
+€0.99 individual price and €1.99/month Premium price. Both buttons show a demo
+confirmation; neither calls StoreKit, grants ownership, nor downloads paid content.
+The preview works independently of product availability and existing ownership.
+It does not test Apple's payment sheet or purchase verification. It is absent from
+Release builds and is never written to the remote catalogue.
+
+When real ads are disabled, Debug builds show a labeled placeholder at the normal
+banner placements (below the home catalogue and on results), for non-Premium
+users after ownership resolves. This is a layout preview, not an AdMob delivery or
+consent test. The existing `-adTesting` argument still selects Google's test banner
+and follows the consent flow.
+
+Current local configuration has `QuizPurchasesEnabled=true` and
+`QuizAdsEnabled=false`; older dated entries above describe the configuration at
+the time of those checks. The enabled purchase flag alone does not establish
+App Store product approval or a successful sandbox purchase. No live console
+status, device push delivery, or real purchase validation was reverified as part
+of this UI preview change. The outstanding external checks above still require
+confirmation before treating the launch as complete.
+
+Verification for this change: Debug simulator build and both targeted commerce UI
+tests pass (demo offers/actions/banner and existing Premium/legal navigation).
+The Release simulator build also succeeds; the debug quiz fixture identifier and
+banner identifier are absent from its executable. This does not validate live
+purchases, live ads, or push delivery.
+
+An ordinary Debug launch without testing arguments was also checked on the iPhone
+Duo simulator. The demo card is immediately visible. The live catalogue loads
+“Quel serait ton familier ?” with a €0.99 product price, confirming catalogue and
+price retrieval in that session. No real transaction was initiated; this observation
+does not confirm App Store review/production availability or paid-content access.
+
+
+## AdMob verification and integration — 5 November 2026
+
+### Completed in the account
+
+- AdMob account is approved. The intended app is **Qui es-tu / iOS / 6740242586**,
+  AdMob app `7657247635` (not the separate old “Qui êtes-vous ?” entry).
+- Published **Qui es-tu — Consentement publicitaire Europe** and verified its
+  **Publié** status. It applies only to this app, targets EEA/UK/Switzerland,
+  defaults to French with English available, and includes a first-screen refusal
+  choice. Its privacy URL is the canonical Over Tech Apps page.
+- Reviewed both language previews. Google's generated TCF wording describes the
+  account's shared partner list and broader vendor purposes (including personalized
+  ads and potential precise location). Those account-wide settings also affect
+  AnimalDex and were not changed. This app continues to request only non-personalized
+  ads, does not request ATT or location permission, and disables publisher first-party
+  ID. Publishing the standard message does not change those app restrictions.
+- Verified banner **Accueil et résultats — bannière** matches
+  `ca-app-pub-3802123025791172/4975243978`, with Google-optimized automatic refresh.
+  No mediation group or house campaign is attached.
+- Retrieved the hosted `app-ads.txt`: HTTP success and exact expected line
+  `google.com, pub-3802123025791172, DIRECT, f08c47fec0942fa0`.
+
+### App changes and verification
+
+- Ordinary Debug runs now use Google's sample banner automatically, without a
+  launch argument. Automated UI fixtures/previews still suppress network ads.
+  Release still uses the configured production ad unit and the `QuizAdsEnabled`
+  switch. Debug never selects the production unit.
+- The fixed 320 × 50 banner uses Google's fixed-size demo unit ending in
+  `/2934735716`, matching `AdSizeBanner`, rather than the adaptive demo unit.
+  Source: <https://developers.google.com/admob/ios/test-ads>.
+  A Debug-only status panel exposes purchase/consent gating and SDK errors on
+  physical devices, with a retry action that preserves consent choices. This
+  corrects a configuration mismatch; it does not by itself establish the cause
+  of a particular physical-device failure.
+- Physical follow-up on **Sakana (iPhone Air)**: the previously installed build
+  showed no banner at the bottom of Home. Installing the updated Debug build
+  while preserving app data, then launching without arguments, displayed Google's
+  **Test mode** banner and reported a successful load. The current purchase and
+  consent state both permit ads. The original failure had no captured error, so
+  its exact cause is not proven. The physical Debug build and Release simulator
+  build passed; the Release executable excludes the new diagnostic view/retry.
+  Manual retry also completed successfully without changing saved consent.
+  The initial physical-device capture showed a black creative area labelled
+  **Test mode** despite successful callbacks. The user confirmed VPN/ad-blocking
+  network settings were active; after temporarily pausing them and retrying, the
+  user confirmed the full banner appeared on Sakana. A subsequent device capture
+  also verified the full Google creative on the same installed build. This isolates the black
+  creative to that network setup, without identifying its exact filtering component.
+- Added the 50 SKAdNetwork identifiers in Google's current official iOS setup
+  list. Source: <https://developers.google.com/admob/ios/quick-start>.
+- Fixed SDK initialization ordering: configure content rating and first-party ID,
+  await SDK startup, then expose banner eligibility. Granting consent later from
+  privacy settings follows the same initialization path. Privacy form actions are
+  serialized; repeated taps cannot present competing forms.
+- Added Debug-only `-adTesting -adConsentEEA -adConsentReset` for reproducible
+  first-launch EEA checks. Without `-adConsentReset`, saved choices are preserved.
+  Simulators are UMP test devices automatically. On a physical test device, use
+  `QUI_AD_TEST_DEVICE_ID` with the device's UMP test identifier. These debugging
+  options are absent from Release behavior.
+- Exercised the real Google UMP service on the iOS 26.5 simulator: initial EEA
+  form, refusal, reopening privacy settings, acceptance, relaunch persistence,
+  and subsequent consent withdrawal. Google's test banner rendered successfully.
+  After withdrawal, the SDK stored zero purpose consents; UMP can still permit
+  limited ads. Banner visibility alone does not mean personalized-ad consent.
+- The final live UI test passed, including an ordinary Debug launch without
+  arguments and a visibly rendered Google test banner. Consent checks targeted
+  presented WebViews because UMP also retains offscreen preloaded forms. No
+  missing SKAdNetwork warnings were observed. No real ad was clicked and no real
+  revenue was tested. The temporary network-dependent test is not part of the
+  regular test suite.
+- Debug UI verification and the Release simulator build succeeded. The built
+  Release plist contains all 50 ad-network entries and keeps production ads off.
+  The latest Debug app is installed on Duo and was left at the French consent
+  prompt for the user's choice.
+
+### Remaining production dependencies
+
+1. **App-ads verification is still blocked by the live App Store listing.** AdMob
+   reports “Examen requis / Diffusion d'annonces limitée / Verify app”. Retrying
+   verification failed. Apple's public lookup for live version **1.1.1** returns
+   no seller website. The existing **1.2.0 Prepare for Submission** version already
+   has the correct marketing and support URLs; those values were verified, not
+   changed. They must become live through the app release, then Google must recrawl
+   and approve the app. A correct hosted file alone cannot complete this step.
+2. **Privacy labels must accompany the updated build.** App Store Connect still
+   publishes “Data Not Collected”, dated two years ago. The canonical privacy URL
+   is already edited for the next release. The questionnaire publishes each
+   completed data type immediately, rather than keeping a future-version draft;
+   exploratory unsaved selections were discarded, and no public label was changed.
+   Use the worksheet below to finish declarations for the actual release binary.
+3. **Production delivery stays disabled (`QuizAdsEnabled=false`).** The new
+   **1.2.0 build 10** archive is a TestFlight candidate and retains this setting.
+   Debug-only fake purchases and ad diagnostics are excluded. After the release
+   disclosures and verification are ready, enable the switch, upload a new build,
+   and update App Review notes to describe the real behavior.
+   Actual paid ad fill/revenue is not established by test ads. Test-banner
+   rendering is verified on both simulator and physical Sakana.
+
+### Privacy disclosure worksheet for the new build
+
+The application and integrated SDKs no longer justify “Data Not Collected”.
+Review these collected categories against the final archive and actual service
+configuration (optional Analytics/Crashlytics and notifications still count when
+users enable them):
+
+| Category | Evidence / purpose to review |
+| --- | --- |
+| Coarse location | AdMob IP-derived location; UMP region determination; advertising, analytics, functionality |
+| Device ID | AdMob app/device identifiers; Firebase installation and push tokens; advertising, analytics, functionality |
+| Product interaction | Ad interactions, optional quiz/paywall/share analytics, UMP interactions |
+| Advertising data | Ad impressions and related measurement |
+| Crash data | AdMob diagnostics and optional Crashlytics |
+| Performance data | AdMob/UMP diagnostics |
+| Other diagnostic data | AdMob and Firebase operational diagnostics |
+| Other data types | Firebase Messaging SDK/device metadata disclosed in its bundled manifest |
+| Purchase history | Optional `purchase_verified` analytics and verified subscription event processing; no payment-card data |
+
+Google Mobile Ads 13.11.0's bundled manifest marks coarse location, device ID,
+advertising data, and product interaction as linked. It marks diagnostics as
+unlinked and the Device ID category as tracking-capable. The app's no-ATT,
+non-personalized, first-party-ID-disabled configuration is relevant to the tracking
+answer, but “no account” alone is not proof that collected data is unlinked.
+Check the final configuration before publishing those answers. Quiz answers and
+portraits remain local and should not be added as uploaded user content.
+
+References checked for this work:
+- <https://developers.google.com/admob/ios/privacy>
+- <https://developers.google.com/admob/ios/banner>
+- <https://developers.google.com/admob/ios/privacy/data-disclosure>
+- <https://firebase.google.com/docs/ios/app-store-data-collection>
+- <https://support.google.com/admob/answer/10113004>

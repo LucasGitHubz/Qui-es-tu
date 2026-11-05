@@ -33,14 +33,7 @@ struct AppSettingsView: View {
                 }
                 Section("Mes portraits sur cet appareil") {
                     NavigationLink("Historique (\(history.results.count))") {
-                        List(history.results) { result in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(result.quizTitle).font(.caption).foregroundStyle(.secondary)
-                                Text(result.name).font(.headline)
-                                Text(result.description)
-                                Text(result.completedAt, style: .date).font(.caption)
-                            }
-                        }.navigationTitle("Mes portraits")
+                        ResultHistoryView()
                     }
                     Button("Effacer mon historique", role: .destructive) { confirmsHistoryDeletion = true }
                         .disabled(history.results.isEmpty)
@@ -52,6 +45,7 @@ struct AppSettingsView: View {
                         .font(.footnote)
                     if advertising.isPrivacyOptionsRequired {
                         Button("Préférences publicitaires") { Task { await advertising.showPrivacyOptions() } }
+                            .disabled(advertising.isPreparing)
                     }
                     if let message = advertising.message { Text(message).font(.footnote) }
                     if let privacy = CommerceConfiguration.privacyURL {

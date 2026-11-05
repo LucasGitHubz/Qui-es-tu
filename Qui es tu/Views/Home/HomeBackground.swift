@@ -3,9 +3,9 @@ import SwiftUI
 struct HomeBackground: View {
     var body: some View {
         GeometryReader { proxy in
-            AppTheme.background
+            HomeTheme.background
                 .overlay(alignment: .top) {
-                    AppTheme.topWash
+                    LinearGradient(colors: [HomeTheme.topWash, .clear], startPoint: .top, endPoint: .bottom)
                         .frame(height: proxy.size.height * 0.45)
                 }
         }

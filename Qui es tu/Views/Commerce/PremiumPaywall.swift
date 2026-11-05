@@ -8,94 +8,154 @@ struct PremiumPaywall: View {
     @Environment(PurchaseStore.self) private var purchases
     @Environment(\.dismiss) private var dismiss
     @State private var hasFinished = false
+    @State private var showsPreviewConfirmation = false
+
+    private var isDebugPreview: Bool {
+#if DEBUG
+        quiz?.id == DebugCommercePreview.quiz.id
+#else
+        false
+#endif
+    }
+
+    private var previewPremiumPrice: String? {
+#if DEBUG
+        isDebugPreview ? DebugCommercePreview.premiumPrice : nil
+#else
+        nil
+#endif
+    }
+
+    private var previewQuizPrice: String? {
+#if DEBUG
+        isDebugPreview ? DebugCommercePreview.quizPrice : nil
+#else
+        nil
+#endif
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Image(systemName: "sparkles").font(.largeTitle).foregroundStyle(AppTheme.coralCTA)
-                    Text("Passe à Premium").font(.largeTitle.bold())
-                    Text("Tous les quiz, sans publicité.").font(.title2)
-                    benefit("Accède à tous les quiz et à un nouveau quiz chaque semaine.", icon: "square.stack.fill")
-                    benefit("Profite de l’app sans publicité.", icon: "sparkles")
-                    benefit("Soutiens un développeur indépendant qui crée cette app en solo.", icon: "heart.fill")
-
-                    if purchases.access.isPremium {
-                        Label("Premium est actif", systemImage: "checkmark.seal.fill")
-                        Button("Continuer", action: finish).buttonStyle(.borderedProminent)
-                    } else if let premium = purchases.products[CommerceConfiguration.premiumID] {
-                        Text("\(premium.displayPrice) / mois").font(.title.bold())
-                        Button("Devenir Premium") {
-                            Task { await purchases.purchase(premium); finishIfUnlocked() }
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(spacing: 12) {
+                        PaywallHero()
+                            .frame(maxHeight: min(280, max(160, geometry.size.height * 0.30)))
+                        if isDebugPreview {
+                            Text("Mode démo · Aucun paiement réel")
+                                .font(.caption.weight(.semibold))
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 44)
+                                .accessibilityIdentifier("paywall.debugNotice")
                         }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(purchases.isBusy || !CommerceConfiguration.purchasesEnabled)
-                        .accessibilityIdentifier("paywall.subscribe")
-                    } else {
-                        Text(purchases.isLoadingProducts ? "Chargement des prix…" : "L’offre Premium sera bientôt disponible.")
-                    }
+                        PaywallBenefits()
+                            .padding(.horizontal, 8)
 
-                    Text("Abonnement renouvelé automatiquement. Résiliable à tout moment dans les réglages de l’App Store. Accès Premium jusqu’à la fin de la période payée.")
-                        .font(.footnote).foregroundStyle(.secondary)
+                        Spacer(minLength: 16)
 
-                    if let quiz, let id = quiz.productID, !purchases.access.canOpen(quiz) {
-                        Divider()
-                        Text("Seulement ce quiz ?").font(.headline)
-                        Text(quiz.displayTitle).font(.title3.bold())
-                        Text("Achat unique, accès permanent et replays inclus. Les publicités restent affichées sur l’accueil et les résultats. Seul Premium supprime les publicités.")
-                            .font(.subheadline)
-                        if let product = purchases.products[id] {
-                            Button("Acheter ce quiz · \(product.displayPrice)") {
-                                Task { await purchases.purchase(product); finishIfUnlocked() }
-                            }
-                            .buttonStyle(.bordered)
-                            .disabled(purchases.isBusy || !CommerceConfiguration.purchasesEnabled)
-                            .accessibilityIdentifier("paywall.buyQuiz")
-                        } else {
-                            Text("Ce quiz n’est pas encore disponible à l’achat.").font(.footnote)
+                        PaywallSubscriptionOffer(
+                            product: purchases.products[CommerceConfiguration.premiumID],
+                            isPremium: !isDebugPreview && purchases.access.isPremium,
+                            isLoading: purchases.isLoadingProducts,
+                            isBusy: purchases.isBusy,
+                            onSubscribe: subscribe,
+                            onContinue: finish,
+                            previewPrice: previewPremiumPrice
+                        )
+
+                        if let quiz, let id = quiz.productID, (isDebugPreview || !purchases.access.canOpen(quiz)) {
+                            PaywallQuizOffer(
+                                title: quiz.displayTitle,
+                                product: purchases.products[id],
+                                isBusy: purchases.isBusy,
+                                onPurchase: buyQuiz,
+                                previewPrice: previewQuizPrice
+                            )
                         }
-                    }
 
-                    if !CommerceConfiguration.purchasesEnabled {
-                        Text("Les achats ne sont pas encore ouverts. Les quiz gratuits restent disponibles.")
-                            .font(.footnote).foregroundStyle(.secondary)
+                        PaywallFooter(onRestore: restore, isDebugPreview: isDebugPreview)
                     }
-                    if purchases.isBusy { ProgressView("Connexion à l’App Store…") }
-                    if let message = purchases.message { Text(message).font(.callout).accessibilityIdentifier("paywall.message") }
-                    Button("Restaurer mes achats") { Task { await purchases.restore(); finishIfUnlocked() } }
-                        .disabled(purchases.isBusy)
-                    Link("Gérer mon abonnement", destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
-                    Link("Conditions d’utilisation", destination: CommerceConfiguration.termsURL)
-                    if let privacy = CommerceConfiguration.privacyURL {
-                        Link("Confidentialité", destination: privacy)
-                    } else {
-                        NavigationLink("Confidentialité") { PrivacyInformationView() }
-                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, geometry.safeAreaInsets.top + 54)
+                    .padding(.bottom, 8)
+                    .frame(maxWidth: 560)
+                    .frame(minHeight: geometry.size.height, alignment: .top)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(24)
-                .frame(maxWidth: 560, alignment: .leading)
+                .scrollIndicators(.hidden)
+                .ignoresSafeArea(edges: .top)
+            }
+            .overlay(alignment: .top) {
+                HStack {
+                    Spacer()
+                    Button("Fermer", systemImage: "xmark") { dismiss() }
+                        .labelStyle(.iconOnly)
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(HomeTheme.settingsInk)
+                        .frame(width: 44, height: 44)
+                        .background(HomeTheme.surface, in: .circle)
+                        .overlay { Circle().strokeBorder(HomeTheme.settingsBorder, lineWidth: 1) }
+                        .shadow(color: .black.opacity(0.08), radius: 8, y: 3)
+                        .accessibilityIdentifier("paywall.close")
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 6)
+                .padding(.bottom, 4)
+                .frame(maxWidth: 560)
                 .frame(maxWidth: .infinity)
             }
-            .background(AppTheme.turquoise.opacity(0.08))
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Fermer") { dismiss() } }
+            .background {
+                HomeTheme.background.ignoresSafeArea()
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
-        .task {
-            purchases.message = nil
-            PilotTelemetry.event("paywall_viewed", parameters: ["source": quiz?.id ?? "home"])
-            await purchases.loadProducts(for: quizzes)
+        .foregroundStyle(HomeTheme.ink)
+        .tint(PaywallTheme.accent)
+        .alert("Aperçu du paiement", isPresented: $showsPreviewConfirmation) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Ceci est une démonstration de l’écran d’achat. Aucun achat n’est lancé et aucun montant ne sera débité.")
         }
+        .task { await loadOffer() }
         .onChange(of: purchases.access) { _, _ in finishIfUnlocked() }
     }
 
-    private func benefit(_ text: String, icon: String) -> some View {
-        Label { Text(text).fixedSize(horizontal: false, vertical: true) } icon: {
-            Image(systemName: icon).foregroundStyle(AppTheme.coralCTA)
+    private func loadOffer() async {
+        guard !isDebugPreview else { return }
+        purchases.message = nil
+        PilotTelemetry.event("paywall_viewed", parameters: ["source": quiz?.id ?? "home"])
+        await purchases.loadProducts(for: quizzes)
+    }
+
+    private func subscribe() {
+        guard !isDebugPreview else { showsPreviewConfirmation = true; return }
+        guard let product = purchases.products[CommerceConfiguration.premiumID] else { return }
+        purchase(product)
+    }
+
+    private func buyQuiz() {
+        guard !isDebugPreview else { showsPreviewConfirmation = true; return }
+        guard let id = quiz?.productID, let product = purchases.products[id] else { return }
+        purchase(product)
+    }
+
+    private func purchase(_ product: Product) {
+        Task {
+            await purchases.purchase(product)
+            finishIfUnlocked()
+        }
+    }
+
+    private func restore() {
+        guard !isDebugPreview else { return }
+        Task {
+            await purchases.restore()
+            finishIfUnlocked()
         }
     }
 
     private func finishIfUnlocked() {
+        guard !isDebugPreview else { return }
         if let quiz, purchases.access.canOpen(quiz) { finish() }
         else if quiz == nil && purchases.access.isPremium { dismiss() }
     }

@@ -1,0 +1,23 @@
+{
+  "images": [
+    {
+      "filename": "PaywallFox.png",
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "PaywallFox.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "PaywallFox.png",
+      "idiom": "universal",
+      "scale": "3x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

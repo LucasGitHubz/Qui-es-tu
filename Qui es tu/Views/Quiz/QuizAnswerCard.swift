@@ -26,7 +26,9 @@ struct QuizAnswerCard: View {
 
                 Text(text)
                     .font(.subheadline.weight(.medium))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(4)
+                    .minimumScaleFactor(0.5)
+                    .allowsTightening(true)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .foregroundStyle(QuizTheme.ink)

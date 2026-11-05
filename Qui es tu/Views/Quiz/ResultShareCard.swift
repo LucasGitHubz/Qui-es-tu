@@ -22,7 +22,6 @@ struct ResultShareCard: View {
             Text(result.description).font(.title3).fixedSize(horizontal: false, vertical: true)
             Text("Et toi, qui es-tu ?").font(.title2.bold())
             Text("apps.apple.com/app/id6740242586").font(.subheadline)
-            Text("Un quiz pour s’amuser, pas un diagnostic.").font(.caption)
         }
         .foregroundStyle(Color(red: 0.09, green: 0.16, blue: 0.19))
         .padding(32)

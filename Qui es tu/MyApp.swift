@@ -50,6 +50,7 @@ struct MyApp: App {
     @State private var purchases = PurchaseStore()
     @State private var advertising = AdvertisingStore()
     @State private var history = ResultHistoryStore()
+    private var paidQuizzes = PaidQuizStore.shared
 
     init() {
 #if DEBUG
@@ -60,6 +61,27 @@ struct MyApp: App {
             previewCatalog[3].releasedAt = .now
             previewCatalog[5].productID = "com.lucasamelin.quiestu.quiz.weapons"
             previewCatalog[5].releasedAt = .now.addingTimeInterval(-7 * 24 * 60 * 60)
+        }
+        if usesPreviewCatalog && ProcessInfo.processInfo.arguments.contains("-uiTestingRemoteResult") {
+            let base = previewCatalog[0]
+            previewCatalog[0] = Quizz(
+                id: base.id, title: base.title, image: base.image, questions: base.questions,
+                matchingResults: base.matchingResults, resultDescriptions: base.resultDescriptions,
+                resultImages: ["Lynx": "https://qui-es-tu-d441b.web.app/assets/familiers/v1/chat-des-ombres.jpg?test=\(UUID().uuidString)"]
+            )
+        }
+        if usesPreviewCatalog && ProcessInfo.processInfo.arguments.contains("-uiTestingOwnedCatalog") {
+            let productID = "com.lucasamelin.quiestu.quiz.creatures"
+            previewCatalog[3].productID = productID
+            previewCatalog[3].releasedAt = .now
+            _purchases = State(initialValue: PurchaseStore(storeKitEnabled: true, readEntitlements: {
+                try? await Task.sleep(for: .milliseconds(500))
+                return (QuizAccess(isResolved: true, productIDs: [productID]), [productID: "ui-test-proof"])
+            }))
+            paidQuizzes = PaidQuizStore(directory: nil, fetch: { quiz, _ in
+                try await Task.sleep(for: .milliseconds(300))
+                return quiz
+            })
         }
         _quizzStore = State(
             initialValue: QuizzStore(
@@ -74,7 +96,7 @@ struct MyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(paidQuizzes: paidQuizzes)
                 .environment(quizzStore)
                 .environment(purchases)
                 .environment(advertising)

@@ -19,6 +19,8 @@ final class QuizzStore {
     private(set) var bestMatchResult: QuizResult?
 
     private(set) var isLoadingResult = false
+    private(set) var resultArtworkFailed = false
+    private(set) var resultPreparationID = UUID()
     private(set) var isFetchingQuizzes = false
 
     private(set) var errorMessage = ""
@@ -26,15 +28,21 @@ final class QuizzStore {
 
     private let firestoreService: any QuizzService
     private let telemetry: any AppTelemetry
+    private let artwork: QuizArtworkStore
+    private let revealDelay: Duration
 
     init(
         firestoreService: any QuizzService = FirestoreService(),
         quizzes: [Quizz] = [],
-        telemetry: (any AppTelemetry)? = nil
+        telemetry: (any AppTelemetry)? = nil,
+        artwork: QuizArtworkStore? = nil,
+        revealDelay: Duration = .seconds(3)
     ) {
         self.firestoreService = firestoreService
         self.quizzList = quizzes
         self.telemetry = telemetry ?? NoOpTelemetry()
+        self.artwork = artwork ?? .shared
+        self.revealDelay = revealDelay
     }
 
     var questionCount: Int {
@@ -125,6 +133,7 @@ final class QuizzStore {
             calculateBestMatch()
             isLoadingResult = true
             isQuizzFinished = true
+            resultPreparationID = UUID()
             telemetry.track(.completed(quizID: quizz.id, questionCount: questionCount))
         } else {
             questionIndex += 1
@@ -143,17 +152,28 @@ final class QuizzStore {
     }
 
     func revealResult() async {
-        guard isLoadingResult else {
-            return
-        }
-
+        guard isQuizzFinished, isLoadingResult else { return }
+        let requestID = resultPreparationID
         do {
-            try await Task.sleep(for: .seconds(3))
+            // The original animation and the download run together, not one after the other.
+            async let minimumAnimation: Void = Task.sleep(for: revealDelay)
+            var imageReady = true
+            if let result = bestMatchResult {
+                imageReady = await artwork.load(quizz.resultImages?[result.name] ?? result.name)
+            }
+            try await minimumAnimation
             try Task.checkCancellation()
+            guard resultPreparationID == requestID else { return }
+            resultArtworkFailed = !imageReady
             isLoadingResult = false
-        } catch {
-            return
-        }
+        } catch { return }
+    }
+
+    func retryResultArtwork() {
+        guard isQuizzFinished else { return }
+        resultArtworkFailed = false
+        isLoadingResult = true
+        resultPreparationID = UUID()
     }
 
     func calculateBestMatch() {
@@ -179,6 +199,8 @@ final class QuizzStore {
         userAnswers = []
         isQuizzFinished = false
         isLoadingResult = false
+        resultArtworkFailed = false
+        resultPreparationID = UUID()
         bestMatchResult = nil
     }
 }

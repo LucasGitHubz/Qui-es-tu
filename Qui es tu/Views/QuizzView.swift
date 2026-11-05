@@ -7,14 +7,26 @@ struct QuizzView: View {
     @Environment(QuizzStore.self) private var quizzStore
     @Environment(ResultHistoryStore.self) private var history
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @State private var showsExitConfirmation = false
-    @AccessibilityFocusState private var isResultFocused: Bool
 
     var body: some View {
         ZStack {
             if quizzStore.isLoadingResult {
                 ParticleAnimationView()
                     .accessibilityIdentifier("quiz.reveal")
+            } else if quizzStore.resultArtworkFailed {
+                ContentUnavailableView {
+                    Label("Le portrait n’a pas pu être chargé", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text("Vérifie ta connexion pour afficher ton résultat. Tes réponses sont conservées.")
+                } actions: {
+                    Button("Réessayer", action: quizzStore.retryResultArtwork)
+                        .buttonStyle(.borderedProminent)
+                    Button("Retour aux thèmes", action: finish)
+                }
+            } else if quizzStore.isQuizzFinished, let result = quizzStore.bestMatchResult {
+                QuizResultContent(result: result, quiz: quizzStore.quizz, onRestart: quizzStore.restartQuizz, onFinish: finish)
             } else {
                 VStack(spacing: 0) {
                     QuizHeader(
@@ -31,20 +43,11 @@ struct QuizzView: View {
                             ScrollView {
                                 VStack(alignment: .leading, spacing: QuizTheme.spacing) {
                                     if quizzStore.isQuizzFinished {
-                                        if let result = quizzStore.bestMatchResult {
-                                            QuizResultContent(result: result, theme: quizzStore.quizz.displayTitle, image: quizzStore.quizz.resultImages?[result.name])
-                                                .accessibilityFocused($isResultFocused)
-                                            Text("Un quiz pour s’amuser, pas un diagnostic.").font(.footnote).foregroundStyle(.secondary)
-                                            ResultShareButton(result: result, quiz: quizzStore.quizz)
-                                            ReleaseNotificationPrompt()
-                                            QuizBanner(placement: "result")
-                                        } else {
-                                            ContentUnavailableView(
-                                                "Résultat indisponible",
-                                                systemImage: "questionmark.circle",
-                                                description: Text("Ce thème n’a pas encore de portrait correspondant. Essaie un autre quiz.")
-                                            )
-                                        }
+                                        ContentUnavailableView(
+                                            "Résultat indisponible",
+                                            systemImage: "questionmark.circle",
+                                            description: Text("Ce thème n’a pas encore de portrait correspondant. Essaie un autre quiz.")
+                                        )
                                     } else if quizzStore.questionCount > 0 {
                                         QuizQuestionContent(
                                             question: quizzStore.getQuestion(),
@@ -72,9 +75,8 @@ struct QuizzView: View {
                             .onChange(of: quizzStore.questionIndex) {
                                 scroll.scrollTo("quiz.top", anchor: .top)
                             }
-                            .onChange(of: quizzStore.isQuizzFinished) { _, isFinished in
+                            .onChange(of: quizzStore.isQuizzFinished) {
                                 scroll.scrollTo("quiz.top", anchor: .top)
-                                if !isFinished { isResultFocused = false }
                             }
                         }
                     }
@@ -104,15 +106,20 @@ struct QuizzView: View {
         } message: {
             Text("En quittant, tu perdras tes réponses à ce quiz.")
         }
-        .onChange(of: quizzStore.isLoadingResult) { _, isLoading in
-            isResultFocused = !isLoading && quizzStore.isQuizzFinished
-        }
         .sensoryFeedback(.selection, trigger: quizzStore.userAnswers)
+        .sensoryFeedback(.success, trigger: quizzStore.isLoadingResult) { wasLoading, isLoading in
+            wasLoading && !isLoading && quizzStore.isQuizzFinished && scenePhase == .active
+        }
         .onDisappear { quizzStore.resetQuizz() }
-        .task(id: quizzStore.isQuizzFinished) {
+        .task(id: quizzStore.quizz.id) {
+            let quiz = quizzStore.quizz
+            let sources = quiz.matchingResults?.keys.map { quiz.resultImages?[$0] ?? $0 } ?? []
+            await QuizArtworkStore.shared.preload(sources)
+        }
+        .task(id: quizzStore.resultPreparationID) {
             if quizzStore.isQuizzFinished {
                 await quizzStore.revealResult()
-                if !Task.isCancelled, let result = quizzStore.bestMatchResult {
+                if !Task.isCancelled, !quizzStore.resultArtworkFailed, let result = quizzStore.bestMatchResult {
                     history.save(quiz: quizzStore.quizz, result: result)
                 }
             }

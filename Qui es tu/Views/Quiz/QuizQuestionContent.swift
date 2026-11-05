@@ -37,10 +37,7 @@ struct QuizQuestionContent: View {
                     .accessibilityIdentifier("quiz.progress")
             }
 
-            QuizQuestionCard(
-                question: question.question,
-                isLastQuestion: questionIndex + 1 == questionCount
-            )
+            QuizQuestionCard(question: question.question)
             .accessibilityFocused($isQuestionFocused)
 
             let answers = question.answers.sorted { $0.key < $1.key }

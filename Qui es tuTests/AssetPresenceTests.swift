@@ -21,6 +21,8 @@ final class AssetPresenceTests: XCTestCase {
         // Weapons
         "L'AK-47", "L'arc", "La batte de baseball", "La brosse à dents", "La tronçonneuse",
         "Le déguisement du huissier de justice", "Le fusil à pompe", "Le katana",
+        // Independently animated Premium cards
+        "PaywallPhoenix", "PaywallFox", "PaywallOwl",
         // Misc
         "launchScreen"
     ]

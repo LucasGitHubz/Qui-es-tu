@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		A016F2A12D1DC3050015A8D7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2A02D1DC3050015A8D7 /* FirebaseCore */; };
 		A016F2A52D1DC3050015A8D7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A016F2A42D1DC3050015A8D7 /* FirebaseFirestore */; };
-		FA1000000000000000000001 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000000000000000000002 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		FA1000000000000000000001 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000000000000000000002 /* FirebaseAnalyticsCore */; };
 		FA1000000000000000000003 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000000000000000000004 /* FirebaseCrashlytics */; };
 		FA2000000000000000000001 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = FA2000000000000000000002 /* FirebaseMessaging */; };
 		FA2000000000000000000003 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = FA2000000000000000000004 /* GoogleMobileAds */; };
@@ -62,7 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A016F2A12D1DC3050015A8D7 /* FirebaseCore in Frameworks */,
-				FA1000000000000000000001 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				FA1000000000000000000001 /* FirebaseAnalyticsCore in Frameworks */,
 				FA1000000000000000000003 /* FirebaseCrashlytics in Frameworks */,
 				A016F2A52D1DC3050015A8D7 /* FirebaseFirestore in Frameworks */,
 				FA2000000000000000000003 /* GoogleMobileAds in Frameworks */,
@@ -129,7 +129,7 @@
 			name = "Qui es tu";
 			packageProductDependencies = (
 				A016F2A02D1DC3050015A8D7 /* FirebaseCore */,
-				FA1000000000000000000002 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				FA1000000000000000000002 /* FirebaseAnalyticsCore */,
 				FA1000000000000000000004 /* FirebaseCrashlytics */,
 				A016F2A42D1DC3050015A8D7 /* FirebaseFirestore */,
 				FA2000000000000000000004 /* GoogleMobileAds */,
@@ -220,7 +220,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A016F29B2D1DC3050015A8D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				FA2000000000000000000005 /* GoogleMobileAds */,
+				FA2000000000000000000005 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A00021402D158D5100AC2F67 /* Products */;
@@ -258,13 +258,13 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-
 /* Begin PBXShellScriptBuildPhase section */
 		FA1000000000000000000005 /* Upload Crashlytics symbols */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			inputPaths = (
 				"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)",
 				"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(PRODUCT_NAME)",
@@ -274,7 +274,8 @@
 				"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(CRASHLYTICS_DSYM_BINARY)",
 			);
 			name = "Upload Crashlytics symbols";
-			outputPaths = ();
+			outputPaths = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Simulator and ordinary Debug builds do not upload symbols.\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then exit 0; fi\nif [ \"$CONFIGURATION\" != \"Release\" ] && [ \"${CRASHLYTICS_UPLOAD_DEBUG_SYMBOLS:-NO}\" != \"YES\" ]; then exit 0; fi\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
@@ -441,19 +442,18 @@
 		A00021642D158D5200AC2F67 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				OTHER_LDFLAGS = ("$(inherited)", "-ObjC");
-				CRASHLYTICS_DSYM_BINARY = "$(PRODUCT_NAME).debug.dylib";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Qui-es-tu.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CRASHLYTICS_DSYM_BINARY = "$(PRODUCT_NAME).debug.dylib";
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Qui es tu/Preview Content\"";
 				DEVELOPMENT_TEAM = 8LW7CGBRD9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Qui-es-tu-Info.plist";
-				CODE_SIGN_ENTITLEMENTS = "Qui-es-tu.entitlements";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -466,6 +466,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lucasamelin.Qui-es-tu";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -481,19 +485,18 @@
 		A00021652D158D5200AC2F67 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				OTHER_LDFLAGS = ("$(inherited)", "-ObjC");
-				CRASHLYTICS_DSYM_BINARY = "$(PRODUCT_NAME)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Qui-es-tu.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CRASHLYTICS_DSYM_BINARY = "$(PRODUCT_NAME)";
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Qui es tu/Preview Content\"";
 				DEVELOPMENT_TEAM = 8LW7CGBRD9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Qui-es-tu-Info.plist";
-				CODE_SIGN_ENTITLEMENTS = "Qui-es-tu.entitlements";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -506,6 +509,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lucasamelin.Qui-es-tu";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -640,10 +647,17 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 11.6.0;
+				minimumVersion = 13.1.1;
 			};
 		};
-		FA2000000000000000000005 /* GoogleMobileAds */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git"; requirement = {kind = exactVersion; version = 13.11.0; }; };
+		FA2000000000000000000005 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = exactVersion;
+				version = 13.11.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -657,18 +671,26 @@
 			package = A016F29B2D1DC3050015A8D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		FA1000000000000000000002 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+		FA1000000000000000000002 /* FirebaseAnalyticsCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A016F29B2D1DC3050015A8D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsWithoutAdIdSupport;
+			productName = FirebaseAnalyticsCore;
 		};
 		FA1000000000000000000004 /* FirebaseCrashlytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A016F29B2D1DC3050015A8D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
 		};
-		FA2000000000000000000002 /* FirebaseMessaging */ = {isa = XCSwiftPackageProductDependency; package = A016F29B2D1DC3050015A8D7; productName = FirebaseMessaging; };
-		FA2000000000000000000004 /* GoogleMobileAds */ = {isa = XCSwiftPackageProductDependency; package = FA2000000000000000000005; productName = GoogleMobileAds; };
+		FA2000000000000000000002 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A016F29B2D1DC3050015A8D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		FA2000000000000000000004 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA2000000000000000000005 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A00021372D158D5100AC2F67 /* Project object */;

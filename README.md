@@ -40,7 +40,32 @@ Exécuter aussi les tests `AssetPresenceTests` en Release avec
 `ENABLE_TESTABILITY=YES` passé à `xcodebuild test` (pour les imports `@testable`).
 Enfin, vérifier l'accueil et un résultat de quiz depuis le nouveau build TestFlight.
 
+Pour les tests d’achats locaux, utiliser le simulateur iOS 27.1 : le runtime iOS
+26.5 installé ici refuse les opérations `SKTestSession` lancées en ligne de
+commande (`SKInternalErrorDomain Code=3`). Le schéma Run reste sans configuration
+StoreKit locale pour les essais réels sur appareil. Les tests de prix vérifient
+les chaînes localisées `displayPrice` utilisées par le paywall.
+
 ## Firebase Analytics et Crashlytics
+
+### Correctif de sécurité Firestore — novembre 2026
+
+Le minimum Swift Package Manager est Firebase **13.1.1** et la résolution des
+dépendances est enregistrée dans `Package.resolved`. Cette version retire les
+certificats racines concernés par la compromission eMudhra du magasin embarqué
+de Firestore. Analytics utilise désormais le produit `FirebaseAnalyticsCore`,
+qui conserve la configuration sans prise en charge de l’IDFA.
+
+Après validation, archiver puis distribuer un nouveau build via TestFlight et
+l’App Store, et inviter les utilisateurs à mettre l’app à jour. Les builds déjà
+installés restent concernés : une modification du backend ou une mise à jour
+d’iOS ne suffit pas. Ce dépôt couvre uniquement `qui-es-tu-d441b` ; SoleMate et
+AnimalDex doivent être mis à jour dans leurs propres projets.
+
+Sources : [consignes de remédiation Firebase](https://firebase.google.com/support/guides/compromised-emudhra-intermediate-ca),
+[notes de version Apple SDK](https://firebase.google.com/support/release-notes/ios).
+
+### Configuration
 
 Le projet utilisé est `qui-es-tu-d441b`, application iOS `com.lucasamelin.Qui-es-tu`.
 Analytics doit être activé dans les paramètres > Intégrations de la console Firebase.
@@ -91,9 +116,32 @@ Documentation : [Analytics](https://firebase.google.com/docs/analytics/ios/get-s
 
 L’app intègre les achats StoreKit (quiz à l’unité et Premium mensuel), les bannières
 AdMob avec consentement, le partage de portraits, l’historique local et les alertes
-de nouveaux quiz. Les achats et annonces de production restent désactivés tant
-que les produits Apple, les identifiants AdMob, le backend et la politique de
-confidentialité ne sont pas configurés.
+de nouveaux quiz. La configuration actuelle active les achats côté app ; les annonces
+de production restent désactivées. La disponibilité réelle dépend des produits Apple et des
+vérifications de lancement documentées ci-dessous.
+
+En Debug, toucher **Quiz payant de démonstration** sur l’accueil pour afficher
+le paywall avec des prix fictifs (0,99 € le quiz, 1,99 €/mois Premium). Les boutons
+simulent une confirmation sans paiement ni déblocage. Les lancements Debug normaux
+affichent maintenant une bannière de test Google en bas de l’accueil et sur les
+résultats, après le traitement du consentement. Les aperçus/tests UI hors réseau
+conservent une bannière fictive. Les versions Debug ne demandent jamais une annonce
+de production. Le quiz fictif et les contrôles de test sont absents des builds Release.
+
+Le message de consentement européen AdMob est publié et son parcours a été vérifié
+sur simulateur. Les annonces de production restent désactivées en attendant les
+étapes App Store/app-ads.txt et les déclarations de confidentialité détaillées dans
+le guide de lancement. Pour revérifier le premier lancement européen en Debug :
+`-adTesting -adConsentEEA -adConsentReset` (retirer le dernier argument pour vérifier
+la conservation du choix).
+
+Sur appareil physique, le bloc **Publicité de test · DEBUG** en bas de l’accueil
+indique aussi pourquoi une bannière est masquée (Premium, achats en attente,
+consentement ou erreur réseau). **Réessayer la bannière** relance la demande sans
+effacer le choix de consentement. Ce bloc est absent des versions Release.
+Si Google indique une bannière chargée mais affiche seulement un rectangle noir
+« Test mode », vérifier aussi le VPN ou le blocage publicitaire du réseau : sur
+Sakana, leur suspension suivie d’un nouvel essai a fait apparaître la bannière complète.
 
 Voir [le guide de lancement](docs/monetization-launch.md) pour la configuration,
 les vérifications et les mesures du pilote. Les quatre premiers brouillons restent

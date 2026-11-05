@@ -12,9 +12,14 @@ final class PurchaseStore {
     @ObservationIgnored private var proofs: [String: String] = [:]
     @ObservationIgnored private var refreshGeneration = 0
     @ObservationIgnored private let storeKitEnabled: Bool
+    @ObservationIgnored private let readEntitlements: @MainActor () async -> (access: QuizAccess, proofs: [String: String])
 
-    init(storeKitEnabled: Bool = !CommerceConfiguration.isPreviewOrTest) {
+    init(
+        storeKitEnabled: Bool = !CommerceConfiguration.isPreviewOrTest,
+        readEntitlements: (@MainActor () async -> (access: QuizAccess, proofs: [String: String]))? = nil
+    ) {
         self.storeKitEnabled = storeKitEnabled
+        self.readEntitlements = readEntitlements ?? Self.currentEntitlements
     }
 
     /// The root view owns this structured lifetime task; cancellation stops observation.
@@ -37,7 +42,15 @@ final class PurchaseStore {
         guard storeKitEnabled else { return }
         refreshGeneration += 1
         let generation = refreshGeneration
-        access.isResolved = false
+        // Keep the last verified snapshot visible until its replacement is ready.
+        let snapshot = await readEntitlements()
+        guard generation == refreshGeneration, !Task.isCancelled else { return }
+        proofs = snapshot.proofs
+        access = snapshot.access
+        if !snapshot.access.isResolved { message = "Tes achats n’ont pas pu être vérifiés. Essaie de les restaurer." }
+    }
+
+    private static func currentEntitlements() async -> (access: QuizAccess, proofs: [String: String]) {
         var ids: Set<String> = []
         var verifiedProofs: [String: String] = [:]
         var verificationFailed = false
@@ -47,17 +60,12 @@ final class PurchaseStore {
                 verificationFailed = true
                 continue
             }
-            guard
-                  transaction.revocationDate == nil,
-                  !transaction.isUpgraded,
+            guard transaction.revocationDate == nil, !transaction.isUpgraded,
                   transaction.productType == .nonConsumable || transaction.productType == .autoRenewable else { continue }
             ids.insert(transaction.productID)
             verifiedProofs[transaction.productID] = result.jwsRepresentation
         }
-        guard generation == refreshGeneration, !Task.isCancelled else { return }
-        proofs = verifiedProofs
-        access = QuizAccess(isResolved: !verificationFailed, productIDs: ids)
-        if verificationFailed { message = "Tes achats n’ont pas pu être vérifiés. Essaie de les restaurer." }
+        return (QuizAccess(isResolved: !verificationFailed, productIDs: ids), verifiedProofs)
     }
 
     func loadProducts(for quizzes: [Quizz]) async {

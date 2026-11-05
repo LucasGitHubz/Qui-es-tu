@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ParticleAnimationView: View {
     @StateObject private var particleAnimationStore = ParticleAnimationStore()
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var haptics = ParticleHaptics()
     
     var body: some View {
         VStack(spacing: 10) {
@@ -41,10 +43,15 @@ struct ParticleAnimationView: View {
         }
         .onDisappear {
             particleAnimationStore.stopAnimations()
+            haptics.stop()
         }
         .padding()
         .frame(maxWidth: .infinity)
         .background(AppTheme.screenGradient.ignoresSafeArea())
+        .task(id: scenePhase) {
+            haptics.stop()
+            if scenePhase == .active { haptics.start() }
+        }
     }
 }
 

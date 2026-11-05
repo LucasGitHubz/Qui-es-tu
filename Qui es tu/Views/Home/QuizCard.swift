@@ -3,6 +3,7 @@ import SwiftUI
 struct QuizCard: View {
     let quiz: Quizz
     var isUnlocked = true
+    var price: String? = nil
     let action: () -> Void
 
     var body: some View {
@@ -13,7 +14,7 @@ struct QuizCard: View {
                 HStack(spacing: 8) {
                     Text(quiz.displayTitle)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(AppTheme.ink)
+                        .foregroundStyle(HomeTheme.ink)
                         .lineLimit(1)
 
                     Spacer(minLength: 0)
@@ -25,12 +26,12 @@ struct QuizCard: View {
                 .padding(.vertical, 10)
                 .padding(.horizontal, 12)
             }
-            .background(.white)
+            .background(HomeTheme.surface)
             .clipShape(.rect(cornerRadius: 20))
-            .shadow(color: AppTheme.ink.opacity(0.08), radius: 7, y: 4)
+            .shadow(color: .black.opacity(0.08), radius: 7, y: 4)
         }
         .buttonStyle(PressableCardStyle())
-        .accessibilityLabel(quiz.productID == nil ? quiz.title : "\(quiz.title), quiz payant")
+        .accessibilityLabel(quiz.productID == nil ? quiz.title : "\(quiz.title), quiz payant, \(price ?? "prix indisponible")")
         .accessibilityIdentifier("home.quiz.\(quiz.id)")
     }
 
@@ -43,7 +44,7 @@ struct QuizCard: View {
             .clipped()
             .overlay(alignment: .topTrailing) {
                 if quiz.productID != nil {
-                    PaidQuizBadge()
+                    PaidQuizBadge(price: price)
                         .padding(8)
                 }
             }

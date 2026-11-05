@@ -30,6 +30,11 @@ final class ResultHistoryStore {
         defaults.removeObject(forKey: key)
     }
 
+    func delete(ids: Set<SavedQuizResult.ID>) {
+        results.removeAll { ids.contains($0.id) }
+        persist()
+    }
+
     private func persist() {
         if let data = try? JSONEncoder().encode(results) { defaults.set(data, forKey: key) }
     }

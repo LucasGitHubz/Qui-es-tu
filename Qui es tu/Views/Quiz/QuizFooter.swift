@@ -7,7 +7,6 @@ struct QuizFooter: View {
     let onContinue: () -> Void
     let onRestart: () -> Void
     let onFinish: () -> Void
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(spacing: 8) {
@@ -32,15 +31,8 @@ struct QuizFooter: View {
                     action: onContinue
                 )
                 .accessibilityIdentifier("quiz.validate")
-                .accessibilityHint(isAnswered ? "Tu peux encore changer d’avis." : "Choisis la réponse qui te ressemble.")
+                .accessibilityHint(isAnswered ? "Tu peux encore changer d’avis." : "Sélectionne une réponse pour continuer.")
 
-                if !dynamicTypeSize.isAccessibilitySize {
-                    Text(isAnswered ? "Tu peux encore changer d’avis." : "Choisis la réponse qui te ressemble.")
-                        .font(.footnote)
-                        .foregroundStyle(QuizTheme.secondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
             }
         }
         .frame(maxWidth: QuizTheme.maxWidth)

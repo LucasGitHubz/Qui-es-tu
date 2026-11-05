@@ -133,10 +133,10 @@ struct StoreKitIntegrationTests {
         // The paywall uses Apple's localized string, never a manually formatted Decimal.
         let displayPrice = subscription.displayPrice.filter { !$0.isWhitespace }
         #expect(displayPrice == (locale == "fr_FR" ? "1,99€" : "€1.99"))
-        #expect(subscription.price == Decimal(string: "1.99"))
         #expect(subscription.subscription?.subscriptionPeriod.unit == .month)
-        #expect(store.products[quizID]?.price == Decimal(string: "0.99"))
-        #expect(subscription.displayPrice.isEmpty == false)
+        let individual = try #require(store.products[quizID])
+        let individualDisplayPrice = individual.displayPrice.filter { !$0.isWhitespace }
+        #expect(individualDisplayPrice == (locale == "fr_FR" ? "0,99€" : "€0.99"))
     }
 
     // External refunds and expiry reach StoreKit asynchronously after the test API returns.

@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct PaidQuizBadge: View {
+    let price: String?
+
     var body: some View {
-        Text("PAYANT")
+        Text(price ?? "Prix indisponible")
             .font(.caption2.weight(.semibold))
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             .tracking(0.5)

@@ -9,6 +9,7 @@ import StoreKit
 import SwiftUI
 
 struct ContentView: View {
+    var paidQuizzes = PaidQuizStore.shared
     @Environment(QuizzStore.self) private var quizzStore
     @Environment(PurchaseStore.self) private var purchases
     @Environment(AdvertisingStore.self) private var advertising
@@ -16,6 +17,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.requestReview) private var requestReview
     @AppStorage("lastReviewRequestVersion") private var lastReviewRequestVersion = ""
+    @State private var isPreparingHome = true
     @State private var path: [String] = []
     @State private var isReviewRequestPending = false
     @State private var showsPaywall = false
@@ -28,7 +30,7 @@ struct ContentView: View {
         @Bindable var quizzStore = quizzStore
 
         Group {
-            if quizzStore.isFetchingQuizzes && quizzStore.quizzList.isEmpty {
+            if isPreparingHome {
                 Image("launchScreen")
                     .resizable()
                     .ignoresSafeArea()
@@ -51,8 +53,6 @@ struct ContentView: View {
                             Text(quizzStore.errorMessage)
                         }
                 }
-                // Keep the home artwork light; the quiz follows the device appearance.
-                .preferredColorScheme(path.isEmpty ? .light : nil)
                 .tint(QuizTheme.ink)
                 .onChange(of: path) { _, newPath in
                     guard newPath.isEmpty else {
@@ -67,7 +67,7 @@ struct ContentView: View {
                 }
             }
         }
-        .sheet(isPresented: $showsPaywall) {
+        .fullScreenCover(isPresented: $showsPaywall) {
             PremiumPaywall(quiz: paywallQuiz, quizzes: quizzStore.quizzList) {
                 if let quiz = paywallQuiz { openQuiz(quiz) }
             }
@@ -82,7 +82,12 @@ struct ContentView: View {
             Button("OK", role: .cancel) { openingError = nil }
         } message: { Text(openingError ?? "") }
         .task {
+            async let ownership: Void = purchases.refreshEntitlements()
             await quizzStore.loadQuizzesIfNeeded()
+            await QuizArtworkStore.shared.preload(quizzStore.quizzList.filter { $0.isReleased() }.map(\.image))
+            await ownership
+            guard !Task.isCancelled else { return }
+            isPreparingHome = false
             await purchases.loadProducts(for: quizzStore.quizzList)
             await notifications.refresh()
             handleReleaseNotification()
@@ -103,6 +108,10 @@ struct ContentView: View {
                 }
             }
         }
+        .task(id: paidPrefetchKey) {
+            guard !isPreparingHome, scenePhase == .active, purchases.access.isResolved else { return }
+            await prepareOwnedQuizzes()
+        }
         .onChange(of: notifications.pendingQuizID) { _, _ in
             Task { await refreshCatalogue() }
         }
@@ -110,6 +119,13 @@ struct ContentView: View {
 
     private func openQuiz(_ quiz: Quizz) {
         guard !isOpeningQuiz, path.isEmpty, quiz.isReleased() else { return }
+#if DEBUG
+        if quiz.id == DebugCommercePreview.quiz.id {
+            paywallQuiz = quiz
+            showsPaywall = true
+            return
+        }
+#endif
         guard purchases.access.canOpen(quiz) else {
             paywallQuiz = quiz
             showsPaywall = true
@@ -118,13 +134,16 @@ struct ContentView: View {
         if quiz.productID == nil {
             quizzStore.setQuizz(id: quiz.id)
             path.append(quiz.id)
+        } else if let cached = paidQuizzes.cachedQuiz(for: quiz, access: purchases.access) {
+            quizzStore.setDownloadedQuiz(cached)
+            path.append(quiz.id)
         } else {
             isOpeningQuiz = true
             Task {
                 defer { isOpeningQuiz = false }
                 do {
                     guard let proof = purchases.proof(for: quiz) else { throw PaidQuizService.PaidQuizError.unavailable }
-                    let downloaded = try await PaidQuizService().fetch(quiz, proof: proof)
+                    let downloaded = try await paidQuizzes.prepare(quiz, access: purchases.access, proof: proof)
                     guard purchases.access.canOpen(quiz), path.isEmpty else { return }
                     quizzStore.setDownloadedQuiz(downloaded)
                     path.append(quiz.id)
@@ -133,7 +152,35 @@ struct ContentView: View {
         }
     }
 
+    private var paidPrefetchKey: String {
+        let catalogue = quizzStore.quizzList.map { "\($0.id):\($0.productID ?? "")" }.sorted().joined(separator: ",")
+        return "\(isPreparingHome):\(scenePhase == .active):\(purchases.access.isResolved):\(purchases.access.productIDs.sorted()):\(catalogue)"
+    }
+
+    private func prepareOwnedQuizzes() async {
+        let access = purchases.access
+        let requests = quizzStore.quizzList.compactMap { quiz -> (Quizz, String)? in
+            guard quiz.productID != nil, quiz.isReleased(), access.canOpen(quiz),
+                  let proof = purchases.proof(for: quiz) else { return nil }
+            return (quiz, proof)
+        }
+        await withTaskGroup(of: Void.self) { group in
+            var remaining = requests.makeIterator()
+            for _ in 0..<3 {
+                guard let (quiz, proof) = remaining.next() else { break }
+                group.addTask { _ = try? await paidQuizzes.prepare(quiz, access: access, proof: proof, refresh: true) }
+            }
+            for await _ in group {
+                guard !Task.isCancelled else { break }
+                if let (quiz, proof) = remaining.next() {
+                    group.addTask { _ = try? await paidQuizzes.prepare(quiz, access: access, proof: proof, refresh: true) }
+                }
+            }
+        }
+    }
+
     private func refreshCatalogue() async {
+        guard !isPreparingHome else { return }
         if !CommerceConfiguration.isPreviewOrTest { await quizzStore.loadQuizzes() }
         await purchases.loadProducts(for: quizzStore.quizzList)
         handleReleaseNotification()

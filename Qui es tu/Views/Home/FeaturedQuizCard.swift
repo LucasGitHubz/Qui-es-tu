@@ -3,6 +3,7 @@ import SwiftUI
 struct FeaturedQuizCard: View {
     let quiz: Quizz
     var isUnlocked = true
+    var price: String? = nil
     let action: () -> Void
 
     var body: some View {
@@ -12,7 +13,7 @@ struct FeaturedQuizCard: View {
                 .overlay(alignment: .topLeading) { badge }
                 .overlay(alignment: .topTrailing) {
                     if quiz.productID != nil {
-                        PaidQuizBadge()
+                        PaidQuizBadge(price: price)
                             .padding(14)
                     }
                 }
@@ -21,7 +22,7 @@ struct FeaturedQuizCard: View {
                 .shadow(color: AppTheme.coralShadow.opacity(0.25), radius: 14, y: 12)
         }
         .buttonStyle(PressableCardStyle())
-        .accessibilityLabel(quiz.productID == nil ? "Quiz du jour, \(quiz.title)" : "Nouveau quiz, \(quiz.title), quiz payant")
+        .accessibilityLabel(quiz.productID == nil ? "Quiz du jour, \(quiz.title)" : "Nouveau quiz, \(quiz.title), quiz payant, \(price ?? "prix indisponible")")
         .accessibilityIdentifier("home.quiz.\(quiz.id)")
     }
 
@@ -49,36 +50,27 @@ struct FeaturedQuizCard: View {
         Text(quiz.releasedAt == nil ? "QUIZ DU JOUR" : "NOUVEAU QUIZ")
             .font(AppTheme.display(size: 11))
             .tracking(1)
-            .foregroundStyle(AppTheme.ink)
+            .foregroundStyle(quiz.releasedAt == nil ? AppTheme.ink : .white)
             .padding(.vertical, 5)
             .padding(.horizontal, 10)
-            .background(AppTheme.turquoise, in: .capsule)
+            .background(quiz.releasedAt == nil ? AppTheme.turquoise : AppTheme.coralCTA, in: .capsule)
             .padding(14)
     }
 
     private var bottomRow: some View {
         HStack(alignment: .bottom, spacing: 10) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(quiz.displayTitle)
-                    .font(AppTheme.display(size: 26))
-                    .foregroundStyle(.white)
-
-                if let teaser = quiz.teaser {
-                    Text(teaser)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white.opacity(0.8))
-                        .lineLimit(1)
-                }
-            }
+            Text(quiz.displayTitle)
+                .font(AppTheme.display(size: 26))
+                .foregroundStyle(.white)
 
             Spacer(minLength: 0)
 
             Text(isUnlocked ? "C'est parti →" : "Découvrir →")
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(QuizTheme.actionInk)
                 .padding(.vertical, 10)
                 .padding(.horizontal, 16)
-                .background(AppTheme.coralCTA, in: .capsule)
+                .background(QuizTheme.accent, in: .capsule)
                 .fixedSize()
         }
         .padding(.horizontal, 16)

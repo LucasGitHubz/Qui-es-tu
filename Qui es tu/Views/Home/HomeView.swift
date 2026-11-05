@@ -10,29 +10,19 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    HomeHeader()
-                    Button("Réglages", systemImage: "gearshape", action: onSettings)
-                        .labelStyle(.iconOnly)
-                        .accessibilityIdentifier("home.settings")
-                }
-                    .padding(.top, 14)
-
-                Button(action: onPremium) {
-                    Label(purchases.access.isPremium ? "Premium · sans publicité" : "Tous les quiz, sans pub · Premium", systemImage: "sparkles")
-                        .font(.subheadline.bold())
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, 16)
-                .accessibilityIdentifier("home.premium")
+                HomeHeader(isPremium: purchases.access.isPremium, onPremium: onPremium, onSettings: onSettings)
+                    .padding(.top, 8)
 
                 HomeTitleBlock()
                     .padding(.top, 18)
 
+#if DEBUG
+                DebugPaidQuizCard(onSelect: onSelect)
+                    .padding(.top, 18)
+#endif
+
                 if let featuredQuiz {
-                    FeaturedQuizCard(quiz: featuredQuiz, isUnlocked: purchases.access.canOpen(featuredQuiz)) {
+                    FeaturedQuizCard(quiz: featuredQuiz, isUnlocked: purchases.access.canOpen(featuredQuiz), price: featuredQuiz.productID.flatMap { purchases.products[$0]?.displayPrice }) {
                         onSelect(featuredQuiz)
                     }
                     .padding(.top, 18)
@@ -40,12 +30,12 @@ struct HomeView: View {
 
                 Text("Tous les thèmes")
                     .font(AppTheme.display(size: 17, weight: .bold))
-                    .foregroundStyle(AppTheme.ink)
+                    .foregroundStyle(HomeTheme.ink)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.top, 22)
                     .padding(.bottom, 12)
 
-                HomeQuizGrid(quizzes: gridQuizzes, access: purchases.access, onSelect: onSelect)
+                HomeQuizGrid(quizzes: gridQuizzes, access: purchases.access, prices: purchases.products.mapValues(\.displayPrice), onSelect: onSelect)
 
                 QuizBanner(placement: "home")
             }
@@ -55,6 +45,8 @@ struct HomeView: View {
         .background {
             HomeBackground()
         }
+        .foregroundStyle(HomeTheme.ink)
+        .tint(QuizTheme.accent)
     }
 
     /// Quiz of the day, picked deterministically from the current date.
